@@ -1,0 +1,179 @@
+#!/usr/bin/env pinpoint
+[duration=40]
+
+
+-- []
+Writing a Wayland Compositor
+
+-- []
+Robert Bragg
+
+-- []
+Neil Roberts
+# who are you?
+
+--
+The current X architecture
+
+-- [stage-color=white] [x-architecture.png]
+
+-- 
+The new architecture
+
+-- [stage-color=white] [wayland-architecture.png]
+
+
+--
+libwayland-server
+
+#Explain that this lib provides just the protocol marshaling stuff + some utils for dealing with input grabs, data device, 
+#Note: there's nothing specific to the rendering architecture here
+
+--
+Clients in their own world
+
+--
+Clients are King
+
+# Anything that's not a shared resource is handled in the client
+# rendering, inc client side decorations, keyboard maps / interpreting keyboard events
+
+
+--
+How a compositor looks
+
+
+# Explain that compositors advertise objects implementing interfaces to clients
+# - there is a set of global objects that get advertised via events when a client first connects
+# Give examples of the different global objects in a compositor
+#   - wl_display - bind
+#   - wl_compositor - create_surface
+#   - wl_shm
+#   - wl_output
+#   - wl_input_device
+# Explain how clients bind to a server object interface to create a local proxy object
+# Whenever a client binds an object then the compositor constructs a server side
+# resource representing the clients view of that object.
+
+--
+Objects
+
+--
+Interfaces
+
+--
+Binding an interface
+
+--
+Events & Requests
+
+
+--
+The rendering architecture
+
+-- [diagram.todo]
+EGL
+
+# EGL
+# - Black Box
+# - There is a client and server component that gets to define any private wayland extension it likes to enable sharing buffers between client and server
+#   - wl_drm is an example of how its done on mesa but it's conceptually an implementation detail
+# -
+
+
+#--
+#SHM Clients???
+
+--
+EGL in Clients
+
+#EGL must allow you to pass a struct wl_display to eglGetDisplay()
+#EGL must support the libwayland-egl platform types
+#
+#Clients first ask the compositor to create a surface, then they use the wl_egl_window_create() to create a native EGL window type which can be passed to eglCreateWindowSurface()
+#eglMakeCurrent and from here on its just regular GL
+
+
+--
+EGL in the Compositor
+
+# No special EGL platform required
+# Just requires the EGL_WL_bind_wayland_display extension
+# The compositor calls eglBindWaylandDisplayWL which can register any private wayland interfaces required for passing buffers cross-process
+# So for example you could write a wayland compositor hosted under X by using the typical EGL XLIB platform types to create windows
+
+
+--
+Frame life-cycle
+
+
+--
+Kernel Mode Setting
+
+
+
+--
+Cogland: A small Cogl based compositor
+
+# Examples of adding key objects: compositor, wl_shm, outputs, shell
+
+# Examples of dealing with buffer attaches
+
+# Example of posting the frame callback-done events
+
+
+--
+A small Clutter based compositor
+
+# Explain about implementing the wl_input_device interface
+
+
+--
+xwayland
+
+# Introduce that X wayland is a means to support legacy X clients
+#
+# Introduce that the compositor is responsible for starting an X wayland server for X clients to connect too.
+
+--
+Starting X Wayland
+
+# stuff
+
+--
+The xwayland.xml protocol
+
+# Explain the surface_set_xid request
+
+
+--
+Caveats
+
+# Beware of having separate X and wayland command streams
+# Beware how you forward mouse input
+# Keep X window positions in synch with composited position if want menus to behave
+
+
+--
+Mutter
+
+# Explain moving shell surfaces
+
+# Summarize some of the mutter specifics
+#   - We make MetaWindows + MetaWindowActors and MetaShapedTextures just as is done for X windows
+
+# Explain that in general the ways in which a hybrid compositor gets developed is going to vary a lot between code bases
+# Some differences with how X and wayland clients are dealt with include
+# - Resizing: instead of the WM overriding the size of client windows, wayland clients post new buffers and the compositor just has to deal with whatever size they are.
+# - The compositor no longer needs to draw decorations for each client window
+
+
+--
+Mutter Status
+
+# Basically working
+# Wayland clients are still somewhat side-band, not being involved in window stacking for example.
+
+--
+DEMO
+
