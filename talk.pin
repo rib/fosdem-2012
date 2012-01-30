@@ -253,6 +253,78 @@ Enter and leave graphics mode on the tty
 --
 Cogland: A small Cogl based compositor
 
+--
+<i>Add a global object</i>
+
+<tt>
+  <span color="#A020F0">if</span> (!wl_display_add_global (compositor.wayland_display,
+                              &amp;wl_compositor_interface,
+                              &amp;compositor,
+                              compositor_bind))
+    g_error (<span color="#8B2252">&quot;Failed to register wayland compositor object&quot;</span>);
+
+  compositor.wayland_shm = wl_shm_init (compositor.wayland_display,
+                                        &amp;shm_callbacks);
+</tt>
+--
+<i>This part is a callback</i>
+
+<tt>
+  <span color="#A020F0">if</span> (!wl_display_add_global (compositor.wayland_display,
+                              &amp;wl_compositor_interface,
+                              &amp;compositor,
+                              <span background="#ff0000">compositor_bind</span>))
+    g_error (<span color="#8B2252">&quot;Failed to register wayland compositor object&quot;</span>);
+
+  compositor.wayland_shm = wl_shm_init (compositor.wayland_display,
+                                        &amp;shm_callbacks);
+</tt>
+--
+<i>Implementation</i>
+<tt>
+<span color="#A020F0">static</span> <span color="#228B22">voi</span><span color="#228B22">d</span>
+<span color="#0000FF">compositor_bind</span> (<span color="#A020F0">struct</span> <span color="#228B22">wl_client</span> *<span color="#A0522D">client</span>,
+                 <span color="#228B22">void</span> *<span color="#A0522D">data</span>,
+                 <span color="#228B22">guint32</span> <span color="#A0522D">version</span>,
+                 <span color="#228B22">guint32</span> <span color="#A0522D">id</span>)
+{
+  <span color="#228B22">CoglandComposito</span><span color="#228B22">r</span> *<span color="#A0522D">compositor</span> = data;
+
+  wl_client_add_object (client, &amp;wl_compositor_interface,
+                        &amp;cogland_compositor_interface, id, compositor);
+}
+</tt>
+--
+<i>Handling a buffer attach from a client</i>
+<tt>
+<span color="#A020F0">static</span> <span color="#228B22">voi</span><span color="#228B22">d</span>
+<span color="#0000FF">cogland_surface_attach_buffer</span> (<span color="#A020F0">struct</span> <span color="#228B22">wl_client</span> *<span color="#A0522D">wayland_client</span>,
+                               <span color="#A020F0">struct</span> <span color="#228B22">wl_resource</span> *<span color="#A0522D">wayland_surface_resource</span>,
+                               <span color="#A020F0">struct</span> <span color="#228B22">wl_resource</span> *<span color="#A0522D">wayland_buffer_resource</span>,
+                               <span color="#228B22">gint32</span> <span color="#A0522D">dx</span>, <span color="#228B22">gint32</span> <span color="#A0522D">dy</span>)
+{
+  <span color="#B22222">/</span><span color="#B22222">*</span><span color="#B22222">.... </span><span color="#B22222">*/</span>
+  buffer->texture =
+    cogl_wayland_texture_2d_new_from_buffer (compositor->cogl_context,
+                                             wayland_buffer,
+                                             &amp;error);
+  <span color="#B22222">/</span><span color="#B22222">*</span><span color="#B22222">...</span><span color="#B22222">*/</span>
+}
+</tt>
+--
+<i>Post frame callback-done events on paint</i>
+<tt>
+  <span color="#A020F0">while</span> (!g_queue_is_empty (&amp;compositor->frame_callbacks))
+    {
+      <span color="#228B22">CoglandFrameCallbac</span><span color="#228B22">k</span> *<span color="#A0522D">callback</span> =
+        g_queue_peek_head (&amp;compositor->frame_callbacks);
+
+      wl_resource_post_event (&amp;callback->resource,
+                              WL_CALLBACK_DONE, get_time ());
+      wl_resource_destroy (&amp;callback->resource, 0);
+    }
+</tt>
+--
 # Examples of adding key objects: compositor, wl_shm, outputs, shell
 
 # Examples of dealing with buffer attaches
