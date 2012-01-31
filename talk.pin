@@ -3,7 +3,7 @@
 
 
 -- []
-Writing a Wayland Compositor
+(R) Writing a Wayland Compositor
 
 # The idea of this talk is to hopefully give some insight into writing a wayland
 # compositor based on some of our early experiences. So far we've written three
@@ -57,19 +57,21 @@ Clients are King
 # - keyboard maps / interpreting keyboard events
 
 --
-How a compositor looks..
+(R) How a compositor looks..
 
 # We're going to run through the basic design and components of a Wayland
 # compositor...
 
 --
 How a compositor looks..
-• Interfaces
+• Interfaces, Events & Requests
 
 # All interactions over the wayland protocol happen according to interfaces that
 # are declared in XML
 
--- [font=Monospace 100px]
+
+#TODO Need to demonstrate events in the xml:
+-- [font=Monospace 20px]
 <span color="#B22222">&lt;!--</span><span color="#B22222"> A compositor. This object is a global.  The compositor is in
      charge of combining the contents of multiple surfaces into one
      displayable output. </span><span color="#B22222">--></span>
@@ -88,6 +90,21 @@ How a compositor looks..
 #   - wl_output
 #   - wl_input_device
 
+
+# An interface defines a set of requests and events which can each have a name
+# and a set of arguments with names and types.
+#
+# Requests are used for clients to ask something of the compositor.
+#
+# Explain that requests can't send synchronous replies, which makes sense for a
+# cross process IPC protocol, but instead compositors can send events to send
+# information out to clients.
+
+#Example of sending an event from a compositor
+#      wl_resource_post_event (&callback->resource,
+#                              WL_CALLBACK_DONE, get_time ());
+
+
 --
 How a compositor looks..
 • Objects
@@ -96,7 +113,7 @@ How a compositor looks..
 # Explain how compositors advertise objects implementing interfaces to clients
 # - global objects that get advertised via events when a client first connects
 
--- [font=Monospace 100px]
+-- [font=Monospace 20px]
 Example of registering a new global object in a compositor
 
 wl_display_add_global (compositor->wayland_display,
@@ -119,24 +136,7 @@ How a compositor looks..
 #
 
 --
-How a compositor looks..
-• Events & Requests
-
-# An interface defines a set of requests and events which can each have a name
-# and a set of arguments with names and types.
-#
-# Requests are used for clients to ask something of the compositor.
-#
-# Explain that requests can't send synchronous replies, which makes sense for a
-# cross process IPC protocol, but instead compositors can send events to send
-# information out to clients.
-
-#Example of sending an event from a compositor
-#      wl_resource_post_event (&callback->resource,
-#                              WL_CALLBACK_DONE, get_time ());
-
---
-The rendering architecture...
+(N) The rendering architecture...
 
 --
 SHM buffers
@@ -182,14 +182,20 @@ EGL in the Compositor
 --
 EGL_WL_bind_wayland_display
 
+-- [font=Monospace 20px]
+eglBindWaylandDisplayWL()
+
 # No special EGL platform required
 # Just requires the EGL_WL_bind_wayland_display extension
-# The compositor calls eglBindWaylandDisplayWL which can register any private wayland interfaces required for passing buffers cross-process
-# So for example you could write a wayland compositor hosted under X by using the typical EGL XLIB platform types to create windows
-
+#
+# The compositor calls eglBindWaylandDisplayWL which can register any private
+# wayland interfaces required for passing buffers cross-process
+#
+# So for example you could write a wayland compositor hosted under X by using
+# the typical EGL XLIB platform types to create windows
 
 --
-Frame life-cycle
+Frame callbacks
 
 # Explain the background to the problem
 #
@@ -198,7 +204,7 @@ Frame life-cycle
 # completes the rendering of a frame.
 
 --
-Kernel Mode Setting
+(R) Kernel Mode Setting
 
 #Probably just do a fly by explanation....
 
@@ -208,33 +214,39 @@ libgbm
 #Makes allocating drm buffers easy
 #
 
--- [font=Monospace 100px]
+-- [font=Monospace 20px]
 gbm_create_device()
 
--- [font=Monospace 100px]
+-- [font=Monospace 20px]
 eglGetDisplay() with gbm device
 
--- [font=Monospace 100px]
+-- [font=Monospace 20px]
 struct gbm_surface
+
+#Explain that a gbm surface is just a swap-chain of buffers but there's nothing KMS specific about a gbm surface
+
+-- [font=Monospace 20px]
+struct gbm_surface *gbm_surface_create()
 
 #CAVEAT: This api is in flux!
 #Credit Ander Conselvan de Oleveira for these patches
 
 #Encapsulates the data structure of swap chain but doesn't actively control your display hardware
 
--- [font=Monospace 100px]
+-- [font=Monospace 20px]
 eglCreateWindowSurface() with gbm_surface
 
 
--- [font=Monospace 100px]
+-- [font=Monospace 20px]
 eglSwapBuffers()
 
--- [font=Monospace 100px]
+-- [font=Monospace 20px]
 gbm_surface_lock_front_buffer()
 gbm_surface_release_buffer()
 
 # Used to be namedgbm_surface_get/release_bo()
 
+#TODO: explain using the KMS api
 
 --
 TTY handling
@@ -251,9 +263,9 @@ Enter and leave graphics mode on the tty
 
 
 --
-Cogland: A small Cogl based compositor
+(N) Cogland: A small Cogl based compositor
 
---
+-- [font=Monospace 20px]
 <i>Add a global object</i>
 
 <tt>
@@ -279,7 +291,8 @@ Cogland: A small Cogl based compositor
   compositor.wayland_shm = wl_shm_init (compositor.wayland_display,
                                         &amp;shm_callbacks);
 </tt>
---
+
+-- [font=Monospace 20px]
 <i>Implementation</i>
 <tt>
 <span color="#A020F0">static</span> <span color="#228B22">voi</span><span color="#228B22">d</span>
@@ -294,7 +307,8 @@ Cogland: A small Cogl based compositor
                         &amp;cogland_compositor_interface, id, compositor);
 }
 </tt>
---
+
+-- [font=Monospace 20px]
 <i>Handling a buffer attach from a client</i>
 <tt>
 <span color="#A020F0">static</span> <span color="#228B22">voi</span><span color="#228B22">d</span>
@@ -339,7 +353,7 @@ A small Clutter based compositor
 
 
 --
-xwayland
+(R) xwayland
 
 # Introduce that X wayland is a means to support legacy X clients
 #
@@ -348,7 +362,7 @@ xwayland
 --
 Starting X Wayland
 
-# stuff
+#TODO explain the hoops involved here
 
 --
 The xwayland.xml protocol
@@ -367,7 +381,12 @@ Caveats
 --
 Mutter
 
+# Introduce what mutter is; GNOME/X compositor framework
+
+
+
 # Explain moving shell surfaces
+
 
 # Summarize some of the mutter specifics
 #   - We make MetaWindows + MetaWindowActors and MetaShapedTextures just as is done for X windows
@@ -385,7 +404,7 @@ Mutter Status
 # Wayland clients are still somewhat side-band, not being involved in window stacking for example.
 
 --
-Where should you start?
+(N) Where should you start?
 
 # Well there's quite a bit of code to reference now:
 #   There's obviously the Weston compositor which you should definitely take a look at.
@@ -396,6 +415,7 @@ Where should you start?
 #
 # recommend others interested in writing a wayland compositor that you start
 # with a few toys
+
 --
 DEMO
 
