@@ -5,8 +5,19 @@
 -- []
 Writing a Wayland Compositor
 
+# The idea of this talk is to hopefully give some insight into writing a wayland
+# compositor based on some of our early experiences. So far we've written three
+# compositors; each progressively more capable than the last and found it a
+# good way of learning what's involved.
+
 -- []
 Robert Bragg
+
+# - Intel Open Source Technology Center, based in London
+# - Maintainer for the Cogl 3D graphics API
+# - Done lots of work on Clutter
+# - I've done a fair amount of work on Window managers and Graphics drivers
+#   in the past.
 
 -- []
 Neil Roberts
@@ -26,53 +37,112 @@ The new architecture
 --
 libwayland-server
 
-#Explain that this lib provides just the protocol marshaling stuff + some utils for dealing with input grabs, data device, 
+#Explain that this lib provides just the protocol marshaling stuff + some utils
+#for dealing with input grabs, data device,
+
 #Note: there's nothing specific to the rendering architecture here
 
 --
 Clients in their own world
 
+# Explain that client surfaces all have a private coordinate space and its not
+# possible to discover the surfaces of other clients like you can under X.
+
 --
 Clients are King
 
-# Anything that's not a shared resource is handled in the client
-# rendering, inc client side decorations, keyboard maps / interpreting keyboard events
-
+# Anything that's not a shared resource is handled in the client:
+# - rendering,
+# - client side decorations
+# - keyboard maps / interpreting keyboard events
 
 --
-How a compositor looks
+How a compositor looks..
 
+# We're going to run through the basic design and components of a Wayland
+# compositor...
 
-# Explain that compositors advertise objects implementing interfaces to clients
-# - there is a set of global objects that get advertised via events when a client first connects
-# Give examples of the different global objects in a compositor
+--
+How a compositor looks..
+• Interfaces
+
+# All interactions over the wayland protocol happen according to interfaces that
+# are declared in XML
+
+-- [font=Monospace 100px]
+  <!-- A compositor. This object is a global.  The compositor is in
+       charge of combining the contents of multiple surfaces into one
+       displayable output. -->
+  <interface name="wl_compositor" version="1">
+    <!-- Factory request for a surface objects. A surface is akin to a
+         window. -->
+    <request name="create_surface">
+      <arg name="id" type="new_id" interface="wl_surface"/>
+    </request>
+  </interface>
+
+# Give examples of the different interfaces in a compositor
 #   - wl_display - bind
 #   - wl_compositor - create_surface
 #   - wl_shm
 #   - wl_output
 #   - wl_input_device
+
+--
+How a compositor looks..
+• Objects
+
+# Explain that interfaces are implemented by objects.
+# Explain how compositors advertise objects implementing interfaces to clients
+# - global objects that get advertised via events when a client first connects
+
+-- [font=Monospace 100px]
+Example of registering a new global object in a compositor
+
+wl_display_add_global (compositor->wayland_display,
+		       &wl_output_interface,
+		       output,
+		       bind_output);
+
+--
+How a compositor looks..
+• Binding an interface
+
 # Explain how clients bind to a server object interface to create a local proxy object
 # Whenever a client binds an object then the compositor constructs a server side
 # resource representing the clients view of that object.
 
---
-Objects
+#E.g.
+#  if (strcmp (interface, "wl_compositor") == 0)
+#    wayland_renderer->wayland_compositor =
+#      wl_display_bind (display, id, &wl_compositor_interface);
+#
 
 --
-Interfaces
+How a compositor looks..
+• Events & Requests
+
+# An interface defines a set of requests and events which can each have a name
+# and a set of arguments with names and types.
+#
+# Requests are used for clients to ask something of the compositor.
+#
+# Explain that requests can't send synchronous replies, which makes sense for a
+# cross process IPC protocol, but instead compositors can send events to send
+# information out to clients.
+
+#Example of sending an event from a compositor
+#      wl_resource_post_event (&callback->resource,
+#                              WL_CALLBACK_DONE, get_time ());
 
 --
-Binding an interface
+The rendering architecture...
 
 --
-Events & Requests
-
-
---
-The rendering architecture
+SHM buffers
 
 -- [diagram.todo]
-EGL
+EGL (TODO diagram)
 
 # EGL
 # - Black Box
@@ -80,12 +150,23 @@ EGL
 #   - wl_drm is an example of how its done on mesa but it's conceptually an implementation detail
 # -
 
-
-#--
-#SHM Clients???
+--
+EGL in Clients...
 
 --
-EGL in Clients
+Create a wayland display object
+
+--
+Bind to the wl_compositor interface
+
+--
+wl_compositor::create_surface
+
+--
+libwayland-egl: wl_egl_window_create()
+
+--
+eglCreateWindowSurface()
 
 #EGL must allow you to pass a struct wl_display to eglGetDisplay()
 #EGL must support the libwayland-egl platform types
@@ -94,8 +175,12 @@ EGL in Clients
 #eglMakeCurrent and from here on its just regular GL
 
 
+
 --
 EGL in the Compositor
+
+--
+EGL_WL_bind_wayland_display
 
 # No special EGL platform required
 # Just requires the EGL_WL_bind_wayland_display extension
@@ -106,9 +191,62 @@ EGL in the Compositor
 --
 Frame life-cycle
 
+# Explain the background to the problem
+#
+# Explain that the wl_surface interface has a "frame" request that creates a
+# wl_callback object which emits a "done" event when the compositor next
+# completes the rendering of a frame.
 
 --
 Kernel Mode Setting
+
+#Probably just do a fly by explanation....
+
+--
+libgbm
+
+#Makes allocating drm buffers easy
+#
+
+-- [font=Monospace 100px]
+gbm_create_device()
+
+-- [font=Monospace 100px]
+eglGetDisplay() with gbm device
+
+-- [font=Monospace 100px]
+struct gbm_surface
+
+#CAVEAT: This api is in flux!
+#Credit Ander Conselvan de Oleveira for these patches
+
+#Encapsulates the data structure of swap chain but doesn't actively control your display hardware
+
+-- [font=Monospace 100px]
+eglCreateWindowSurface() with gbm_surface
+
+
+-- [font=Monospace 100px]
+eglSwapBuffers()
+
+-- [font=Monospace 100px]
+gbm_surface_lock_front_buffer()
+gbm_surface_release_buffer()
+
+# Used to be namedgbm_surface_get/release_bo()
+
+
+--
+TTY handling
+
+--
+Block input to the tty
+
+--
+Handle signals for vt switching
+
+--
+Enter and leave graphics mode on the tty
 
 
 
@@ -174,6 +312,18 @@ Mutter Status
 # Basically working
 # Wayland clients are still somewhat side-band, not being involved in window stacking for example.
 
+--
+Where should you start?
+
+# Well there's quite a bit of code to reference now:
+#   There's obviously the Weston compositor which you should definitely take a look at.
+#   There's the tiny Cogland example compositor we have
+#   There's the small test-wayland-surface compositor we have as an interactive test for Clutter
+#   There's now the Mutter hybrid compositor to take a look at too.
+#   There is QT-Compositor on gitorious
+#
+# recommend others interested in writing a wayland compositor that you start
+# with a few toys
 --
 DEMO
 
