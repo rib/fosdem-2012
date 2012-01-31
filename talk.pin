@@ -21,7 +21,10 @@ Robert Bragg
 
 -- []
 Neil Roberts
-# who are you?
+
+# - Also on the visualization team in the Intel OTC.
+# - Part-maintainer of Cogl
+# - Recently got involved in the Wayland effort
 
 -- [stage-color=black] [xarch.png] [bottom-right]
 The current X
@@ -150,6 +153,10 @@ EGL (TODO diagram)
 --
 EGL in Clients...
 
+# EGL is a generic window-system API
+
+--
+eglCreateDisplay(NativeDisplayType display)
 --
 Create a wayland display object
 
