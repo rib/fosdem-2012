@@ -70,16 +70,16 @@ How a compositor looks..
 # are declared in XML
 
 -- [font=Monospace 100px]
-  <!-- A compositor. This object is a global.  The compositor is in
-       charge of combining the contents of multiple surfaces into one
-       displayable output. -->
-  <interface name="wl_compositor" version="1">
-    <!-- Factory request for a surface objects. A surface is akin to a
-         window. -->
-    <request name="create_surface">
-      <arg name="id" type="new_id" interface="wl_surface"/>
-    </request>
-  </interface>
+<span color="#B22222">&lt;!--</span><span color="#B22222"> A compositor. This object is a global.  The compositor is in
+     charge of combining the contents of multiple surfaces into one
+     displayable output. </span><span color="#B22222">--></span>
+&lt;<span color="#0000FF">interface</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">wl_compositor</span><span color="#8B2252">&quot;</span> <span color="#A0522D">version</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">1</span><span color="#8B2252">&quot;</span>>
+  <span color="#B22222">&lt;</span><span color="#B22222">!--</span><span color="#B22222"> Factory request for a surface objects. A surface is akin to a
+       window. </span><span color="#B22222">--></span>
+  &lt;<span color="#0000FF">request</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">create_surface</span><span color="#8B2252">&quot;</span>>
+    &lt;<span color="#0000FF">arg</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">id</span><span color="#8B2252">&quot;</span> <span color="#A0522D">type</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">new_id</span><span color="#8B2252">&quot;</span> <span color="#A0522D">interface</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">wl_surface</span><span color="#8B2252">&quot;</span>/>
+  &lt;/<span color="#0000FF">request</span>>
+&lt;/<span color="#0000FF">interface</span>>
 
 # Give examples of the different interfaces in a compositor
 #   - wl_display - bind
