@@ -23,16 +23,13 @@ Robert Bragg
 Neil Roberts
 # who are you?
 
---
-The current X architecture
+-- [stage-color=black] [xarch.png] [bottom-right]
+The current X
+architecture
 
--- [stage-color=white] [x-architecture.png]
-
--- 
-The new architecture
-
--- [stage-color=white] [wayland-architecture.png]
-
+-- [stage-color=black] [wlarch.png] [bottom-left]
+The new
+architecture
 
 --
 libwayland-server
