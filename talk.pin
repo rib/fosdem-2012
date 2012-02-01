@@ -141,25 +141,42 @@ How a compositor looks..
 --
 SHM buffers
 
--- [diagram.todo]
-EGL (TODO diagram)
+--
+EGL
 
-# EGL
-# - Black Box
-# - There is a client and server component that gets to define any private wayland extension it likes to enable sharing buffers between client and server
-#   - wl_drm is an example of how its done on mesa but it's conceptually an implementation detail
-# -
+# EGL is a platform independent window system API
+#
+# It is used to create a GL or GLES context and bind into to a window
+# or offscreen buffer.
+#
+# It can be considered a replacement for GLX.
+-- [font=45px]
+eglCreateDisplay(NativeDisplayType display)
+
+# For example, to create an EGL display you have to pass it a
+# NativeDisplayType. This is a platform specific pointer representing
+# the display. Eg, for X it could be the X Display* pointer. It is up
+# to the EGL implementation to interpret this pointer correctly.
+
+-- [bottom] [egl-in-wayland.png]
+EGL in Wayland
+
+# Both client and compositor link to EGL.
+#
+# It is up to the implementation for how it passes buffers between
+# client and compositor. It can define whatever internal extensions
+# needed.
+#
+# In Mesa it will create a wl_drm global interface for the client to use.
 
 --
 EGL in Clients...
 
-# EGL is a generic window-system API
-
 --
-eglCreateDisplay(NativeDisplayType display)
---
-Create a wayland display object
+<i>Create a wayland display object</i>
 
+<tt>
+</tt>
 --
 Bind to the wl_compositor interface
 

@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="1024"
+   height="768"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.1 r9760"
+   sodipodi:docname="egl-in-wayland.svg"
+   inkscape:export-filename="/home/neil/c/fosdem-2012/egl-in-wayland.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <defs
+     id="defs4">
+    <marker
+       inkscape:stockid="Arrow2Mend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow2Mend"
+       style="overflow:visible;">
+      <path
+         id="path4751"
+         style="font-size:12.0;fill-rule:evenodd;stroke-width:0.62500000;stroke-linejoin:round;"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         transform="scale(0.6) rotate(180) translate(0,0)" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#000000"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="1"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.62304688"
+     inkscape:cx="440.42626"
+     inkscape:cy="325.97744"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1451"
+     inkscape:window-height="888"
+     inkscape:window-x="116"
+     inkscape:window-y="122"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-284.36218)">
+    <rect
+       style="fill:#ffff00;fill-opacity:1;stroke:#000000;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect5185"
+       width="407.67398"
+       height="364.33856"
+       x="593.85577"
+       y="186.98433"
+       transform="translate(0,284.36218)"
+       rx="30"
+       ry="30" />
+    <rect
+       style="fill:#5f9e9f;fill-opacity:1;stroke:none"
+       id="rect2985"
+       width="426.93414"
+       height="208.65207"
+       x="46.545441"
+       y="336.52518"
+       rx="35.865204"
+       ry="35.865204" />
+    <text
+       xml:space="preserve"
+       style="font-size:61.65922165px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       x="255.35919"
+       y="415.7272"
+       id="text4343"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan4345"
+         x="255.35919"
+         y="415.7272">Client</tspan></text>
+    <rect
+       ry="35.865204"
+       rx="35.865204"
+       y="564.43744"
+       x="46.545441"
+       height="208.65207"
+       width="426.93414"
+       id="rect4347"
+       style="fill:#5f9e9f;fill-opacity:1;stroke:none" />
+    <text
+       sodipodi:linespacing="125%"
+       id="text4349"
+       y="713.63947"
+       x="255.35919"
+       style="font-size:61.65922165px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       xml:space="preserve"><tspan
+         y="713.63947"
+         x="255.35919"
+         id="tspan4351"
+         sodipodi:role="line">Compositor</tspan></text>
+    <rect
+       style="fill:#008080;fill-opacity:1;stroke:#000000;stroke-width:4.5;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect4353"
+       width="198.84206"
+       height="179.90472"
+       x="221.58209"
+       y="458.27347"
+       rx="11.79885"
+       ry="11.79885" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       x="279.27274"
+       y="561.22742"
+       id="text4355"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan4357"
+         x="279.27274"
+         y="561.22742">EGL</tspan></text>
+    <g
+       id="g5206"
+       style="fill:#ffff00;fill-opacity:1">
+      <path
+         style="font-size:medium;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:normal;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;baseline-shift:baseline;color:#000000;fill:#ffff00;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:5;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Sans;-inkscape-font-specification:Sans"
+         d="m 401.28125,505.75 -0.0625,5 192.625,1.625 0.0312,-5 -192.59375,-1.625 z"
+         id="path4359"
+         inkscape:connector-curvature="0" />
+      <path
+         d="m 427.30794,520.58061 -32.67606,-12.32588 32.87694,-11.77961 c -5.29562,7.0723 -5.34658,16.80839 -0.20088,24.10549 z"
+         style="font-size:12px;fill-rule:evenodd;stroke-width:0.62500000000000000;stroke-linejoin:round;fill:#ffff00;fill-opacity:1"
+         id="path5212"
+         inkscape:connector-curvature="0" />
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       x="606.69592"
+       y="228.71474"
+       id="text5165"
+       sodipodi:linespacing="125%"
+       transform="translate(0,284.36218)"><tspan
+         sodipodi:role="line"
+         id="tspan5167"
+         x="606.69592"
+         y="228.71474">Both client and</tspan><tspan
+         sodipodi:role="line"
+         x="606.69592"
+         y="278.71472"
+         id="tspan5169">compositor link</tspan><tspan
+         sodipodi:role="line"
+         x="606.69592"
+         y="328.71472"
+         id="tspan5171">to EGL</tspan><tspan
+         sodipodi:role="line"
+         x="606.69592"
+         y="378.71472"
+         id="tspan5173" /><tspan
+         sodipodi:role="line"
+         x="606.69592"
+         y="428.71472"
+         id="tspan5175">How it passes</tspan><tspan
+         sodipodi:role="line"
+         x="606.69592"
+         y="478.71472"
+         id="tspan5179">buffers is up to the</tspan><tspan
+         sodipodi:role="line"
+         x="606.69592"
+         y="528.71472"
+         id="tspan5183">implementation</tspan></text>
+  </g>
+</svg>
