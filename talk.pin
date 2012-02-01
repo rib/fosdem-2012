@@ -428,29 +428,129 @@ A small Clutter based compositor
 
 # Introduce that X wayland is a means to support legacy X clients
 #
-# Introduce that the compositor is responsible for starting an X wayland server for X clients to connect too.
+# Introduce that the compositor is responsible for starting an X wayland server
+# for X clients to connect too.
 
 --
-Starting X Wayland
+Starting X Wayland lazily
 
-#TODO explain the hoops involved here
-
---
-The xwayland.xml protocol
-
-# Explain the surface_set_xid request
-
+# Introduce the idea of loading X wayland lazily only when we have X clients
+# that require an xserver for compatibility.
+# 
+#
 
 --
-Caveats
+Create a lock file
 
-# Beware of having separate X and wayland command streams
-# Beware how you forward mouse input
+# This is just a case of iterating though the display number space looking for
+# a free display number so we can open a free /tmp/.X11-lock file (checking
+# existing lock files to see if they are stale) before we go ahead and open a
+# unix domain socket.
+
+--
+Open a unix domain socket
+
+# Once we have found a free display number we can create a corresponding
+# /tmp/.X11-unix/X? unix domain socket for X clients to connect too.
+#
+# We can immediately mark the socket as a passive, listening socket via
+# listen(2)
+
+--
+Poll for the socket to be readable
+
+# Now we can poll until an x client tries to connect to the X domain socket
+
+--
+socketpair() for wayland protocol before fork()
+
+# Explain that we want xwayland to be a wayland client so we want to estabilish
+# a socket connection between the compositor and xwayland.
+#
+# We create a socketpair() just before fork()ing to run xwayland so that we can
+# give one end of the pair to xwayland. We use an "WAYLAND_SOCKET" environment
+# variable to convey the file descriptor to xwayland.
+
+--
+fork() xwayland
+
+--
+Wait for "xserver" binding
+
+# Once we know that xwayland has bound the "xserver" interface then we know that
+# the server is initialized and we can also start sending events.
+
+--
+Pass listen socket to xwayland
+
+# So that xwayland can deal with actually accept()ing the new client connection
+# and also handling further client connections the file descriptor for the unix
+# domain socket is passed over the wayland protocol to xwayland.
+
+# The file descriptor is sent using the "listen_socket" event described in the
+# xserver.xml wayland protocol.
+
+-- [font=Monospace 20px]
+wl_client_flush (xwayland_client)
+
+# A detail to be careful about is that you flush the wayland events passing the
+# listen socket to xwayland to avoid a deadlock when trying connecting to
+# xwayland as an X client to become the window manager.
+
+--
+Connect as window manager
+
+# At this point the compositor now becomes a window manager for xwayland
+# clients.
+
+--
+Pair surfaces & windows according to "set_window_id" requests.
+
+# Once xwayland is initialized we can now expect "create_surface" requests to
+# the wl_compositor object that correspond to top level X windows.
+#
+# We can also expect "set_window_id" events over the wayland protocol to inform
+# us about which X Window corresponds to a given xwayland surface.
+
+
+--
+Caveats...
+
+--
+Unsynchronized X and wayland protocols
+
+# Beware of having separate X and wayland command streams. If a wayland surface
+# for an x client is destroyed you might want to know if the window was just
+# unmapped or really destroyed which is something you learn from the X protocol
+# so now your in the awkward situation of having to match corresponding events
+# in each stream.
+#
+# Perhaps at some point it could be better to proxy one protocol over the other
+# so we know things are synchronized but for now at least we've found that
+# consistently making sure to process X events before wayland events works OK
+#FIXME more...
+
+--
+Beware about forwarding mouse input
+
+# This problem mostly just applies to porting X compositors to be hybrid
+# compositor since they will expect to handle X motion events e.g. for moving
+# windows. Compositors should only handle mouse events coming directly into the
+# compositor because it's not reliable to feed events to xwayland and rely on
+# them being reported back via X and exactly matching the original position
+# because the underlying X window may be in the process of being moved.
+
+--
+Sync X windows position to screen
+
 # Keep X window positions in synch with composited position if want menus to behave
 
 
 --
-Mutter
+Hybrid Mutter Status
+
+--
+First a quick intro for Mutter
 
 # Introduce what mutter is; GNOME/X compositor framework
 
