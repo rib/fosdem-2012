@@ -30,9 +30,32 @@ Neil Roberts
 The current X
 architecture
 
+# The main thing to point out here is that the X architecture requires us to
+# put the compositor into a separate process.
+#
+# Because the xserver doesn't know about the compositor scenegraph used to
+# render windows its currently basically infeasible to support input
+# transformations with this architecture.
+#
+# Because the compositor isn't directly responsible for display output it's
+# also very difficult to have fine grained control over what gets displayed;
+# for example compositors want to control when fullscreen applications should
+# be scanned out directly by the display hardware and they also want to take
+# full advantage of the displays overlay capabilities for blending sprites, ui
+# and video layers together.
+
 -- [stage-color=black] [wlarch.png] [bottom-left]
 The new
 architecture
+
+# The thing to point out here is that wayland combines the compositor into the
+# server process.
+#
+# Input redirection is now trivial because the input devices and the scenegraph
+# are now owned by the same process.
+#
+# We can totally control the display hardware in the compositor so we can do
+# whatever
 
 --
 libwayland-server
@@ -440,3 +463,16 @@ Mutter Status
 --
 DEMO
 
+--
+Attributions
+
+2889678711_50c3e81405_b.jpg cc by-nc-sa tinydr
+494823929_a427f05ce4_b.jpg  cc by-nc-sa rcolonna
+2889678725_55f1e7fbeb_b.jpg cc by-nc-sa tinydr
+2889642385_0a8c8592a6_b.jpg cc by-nc-sa tinydr
+5338839892_7f8d2535ed_b.jpg cc by-nc-sa waltarrrrr
+5968108862_d5240a042b_b.jpg cc by 2.0 petcoffr
+2889657735_5234d83de4_b.jpg cc by-nc-sa tinydr
+3536874376_8faa3e977e_b.jpg cc by-nc-sa SkyprPhotography
+1346915953_edab99dab8_b.jpg cc by-nc-sa 'fake is the new real'
+2988748371_a16e92f0b6_b.jpg cc by-nc-nd 2.0 Christine Myaskovsky (chrissymckeen)
