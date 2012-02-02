@@ -195,48 +195,75 @@ EGL in Wayland
 --
 EGL in Clients...
 
+# The EGL implementation has to have specific support to interpret
+# EGLNativeDisplayType and EGLNativeWindowType as wayland types.
+# The client would then do the following:
 --
 <i>Create a wayland display object</i>
 
 <tt>
+<span color="#A020F0">struct</span> <span color="#228B22">wl_displa</span><span color="#228B22">y</span> *<span color="#A0522D">display</span> =
+  wl_display_connect (<span color="#008B8B">NULL</span>);
 </tt>
---
-Bind to the wl_compositor interface
 
+# This returns an object representing the connection on the socket to
+# the Wayland display server. This can be considered an equivalent to
+# the Display* pointer in X.
+-- [font=28px]
+<i>Bind to the wl_compositor interface</i>
+<tt>
+  <span color="#A020F0">if</span> (strcmp(interface, <span color="#8B2252">&quot;wl_compositor&quot;</span>) == 0)
+    d->compositor =
+      wl_display_bind(display, id,
+                      &amp;wl_compositor_interface);
+</tt>
+
+# The client needs a handle to represent the compositor's global
+# wl_compositor interface. It can get this by handle the 'global' event on
+# the wl_display interface and then binding the object as shown.
 --
 wl_compositor::create_surface
 
---
-libwayland-egl: wl_egl_window_create()
+# This is a method on the compositor's wl_compositor object to create
+# a surface. The client generates an ID for the surface.
+--[font=28px]
+<i>libwayland-egl:</i>
 
---
-eglCreateWindowSurface()
+<tt>
+<span color="#A020F0">struct</span> <span color="#228B22">wl_egl_windo</span><span color="#228B22">w</span> *
+<span color="#0000FF">wl_egl_window_create</span>(<span color="#A020F0">struct</span> <span color="#228B22">wl_surface</span> *<span color="#A0522D">surface</span>,
+                     <span color="#228B22">int</span> <span color="#A0522D">width</span>,
+                     <span color="#228B22">int</span> <span color="#A0522D">height</span>);
+</tt>
 
-#EGL must allow you to pass a struct wl_display to eglGetDisplay()
-#EGL must support the libwayland-egl platform types
+# libwayland-egl is some wayland-specific functions in the EGL implementation
+# This function is used to create a structure which combines a size with a
+# wayland surface.
+-- [font=35px]
+eglCreateWindowSurface(EGLNativeWindowType)
+
+# Once the client has a wl_egl_window* pointer it can pass that to
+# EGL as the native window type to create a regular EGL surface.
 #
-#Clients first ask the compositor to create a surface, then they use the wl_egl_window_create() to create a native EGL window type which can be passed to eglCreateWindowSurface()
-#eglMakeCurrent and from here on its just regular GL
-
-
-
+# The surface can then be used with eglMakeCurrent to bind the GL context.
+# From then on the application can just use regular GL or GLES.
 --
 EGL in the Compositor
 
+# On the compositor side the compositor can use whatever EGL platform it likes.
+# For example it could use an X display and an X window as a surface to create
+# a compositor that is nested under X. However the EGL implementation has
+# to implement this one extension...
 --
 EGL_WL_bind_wayland_display
-
+# ... this extension contains one function...
 -- [font=Monospace 20px]
 eglBindWaylandDisplayWL()
 
-# No special EGL platform required
-# Just requires the EGL_WL_bind_wayland_display extension
-#
-# The compositor calls eglBindWaylandDisplayWL which can register any private
-# wayland interfaces required for passing buffers cross-process
-#
-# So for example you could write a wayland compositor hosted under X by using
-# the typical EGL XLIB platform types to create windows
+# ... The compositor must call this to tell the EGL implementation that
+# it should accept buffers passed in from clients. How this works is up
+# to the implementation but in Mesa it will register a global object
+# with the wl_drm interface.
 
 --
 Frame callbacks
@@ -441,7 +468,7 @@ Mutter
 # - The compositor no longer needs to draw decorations for each client window
 
 
---
+-- [photos/waylnad-street.jpg] [bottom]
 Mutter Status
 
 # Basically working
