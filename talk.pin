@@ -715,24 +715,42 @@ Mutter Status
 # Basically working
 # Wayland clients are still somewhat side-band, not being involved in window stacking for example.
 
---
+-- [photos/5338839892_7f8d2535ed_b.jpg]
 (N) Where should you start?
 
-» weston:
-» cogland: git.gnome.org/cogl
-» test-wayland-surface: git.gnome.org/clutter
-» 
-# Well there's quite a bit of code to reference now:
-#   There's obviously the Weston compositor which you should definitely take a look at.
-#   There's the tiny Cogland example compositor we have
-#   There's the small test-wayland-surface compositor we have as an interactive test for Clutter
-#   There's now the Mutter hybrid compositor to take a look at too.
-#   There is QT-Compositor on gitorious
-#
-# recommend others interested in writing a wayland compositor that you start
-# with a few toys
+-- [photos/5338839892_7f8d2535ed_b.jpg] [font=40px] [text-align=center]
+<span size="large"><b>Weston</b></span>
 
---
+<tt>git://anongit.freedesktop.org/wayland/weston</tt>
+
+# The demo compositor for Wayland
+#
+# It's heading towards being a complete usable standalone compositor.
+#
+# This is kept up-to-date with all the latest Wayland protocol changes
+# so it's a very useful example implementation. Much of the code for
+# our Mutter hybrid compositor work borrows code from Weston.
+-- [photos/5338839892_7f8d2535ed_b.jpg] [font=30px]
+<span size="large"><b>Our work</b></span>
+
+Cogland
+<tt>git://git.gnome.org/cogl</tt>
+
+test-window-surface (the small Clutter compositor)
+<tt>git://git.gnome.org/clutter</tt>
+
+Our latest work is on the ‘fosdem-2012’ branches for both
+
+Mutter
+<tt>git://git.gnome.org/mutter</tt>
+on the wip/wayland branch
+
+A QT compositor
+<tt>git://gitorious.org/qt-labs/qt-compositor.git</tt>
+-- [photos/5338839892_7f8d2535ed_b.jpg]
+\#wayland on irc.freenode.net
+
+-- [photos/5968108862_d5240a042b_b.jpg] [bottom] [font=80px]
 DEMO
 
 --[font=18px]
