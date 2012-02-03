@@ -71,6 +71,10 @@ Clients in their own world
 
 # Explain that client surfaces all have a private coordinate space and its not
 # possible to discover the surfaces of other clients like you can under X.
+#
+# This makes the compositor more free to place windows wherever it wants and
+# apply whatever transformations it likes without having to describe those
+# transformations to the clients
 
 -- [photos/1346915953_edab99dab8_b.jpg]
 Clients are King
