@@ -325,20 +325,37 @@ eglBindWaylandDisplayWL()
 --
 Wayland outputs
 
+-- [font=Monospace 20px]
+  <interface name="wl_output" version="1">
+    <enum name="subpixel"> ... </enum>
+    <event name="geometry"> ... </event>
+    <enum name="mode"> ... </enum>
+    <event name="mode"> ... </event>
+  </interface>
+
+--
+The Compositor object
+
+-- [font=Monospace 20px]
+  <interface name="wl_compositor" version="1">
+    <request name="create_surface">
+      <arg name="id" type="new_id" interface="wl_surface"/>
+    </request>
+  </interface>
+
+
+# Remember to note that the xml snippet is a pseudo description
 
 --
 The wl_surface interface
 
---
-The wl_shell_surface interface
-
-
-# Examples of adding key objects: compositor, wl_shm, outputs, shell
-
-# Examples of dealing with buffer attaches
-
-# Example of posting the frame callback-done events
-
+-- [font=Monospace 20px]
+  <interface name="wl_surface" version="1">
+    <request name="destroy" type="destructor"/>
+    <request name="attach"> ... </request>
+    <request name="damage"> ... </request>
+    <request name="frame"> ... </request>
+  </interface>
 
 -- [photos/depot.jpg]
 Handling buffer attach requests
@@ -403,6 +420,23 @@ Frame callbacks
       wl_resource_destroy (&amp;callback->resource, 0);
     }
 </tt>
+
+--
+The wl_shell_surface interface
+
+-- [font=Monospace 20px]
+  <interface name="wl_shell_surface" version="1">
+    <request name="move"> ... </request>
+    <enum name="resize"> ... </enum>
+    <request name="resize"> ... </request>
+    <request name="set_toplevel"/>
+    <request name="set_transient"> ... </request>
+    <request name="set_fullscreen"/>
+    <request name="set_popup"> ... </request>
+    <event name="configure"> ... </event>
+    <event name="popup_done"/>
+  </interface>
+
 
 # This code posts an event on the resource belonging to the callback
 # registered for the notification.
@@ -522,19 +556,19 @@ drmModeSetCrtc (fd, encoder->crtc_id, fb_id,
 		connector_id, 1 <span color="#B22222">/* </span><span color="#B22222">n_connectors </span><span color="#B22222">*/</span>,
 		&amp;mode);
 
---
+-- [photos/parish.jpg]
 TTY handling
 
---
+-- [photos/parish.jpg]
 Block input to the tty
 
--- [font=Monospace 20px]
+-- [font=Monospace 20px] [photos/parish.jpg]
 tcflush(tty->fd, TCIFLUSH);
 
---
+-- [photos/parish.jpg]
 Handle signals for vt switching
 
--- [font=Monospace 20px]
+-- [font=Monospace 20px] [photos/parish.jpg]
 mode.mode = VT_PROCESS;
 mode.relsig = SIGUSR1;
 mode.acqsig = SIGUSR2;
@@ -543,17 +577,17 @@ mode.acqsig = SIGUSR2;
 	<span color="#A020F0">return</span> <span color="#008B8B">NULL</span>;
 }
 
---
+-- [photos/parish.jpg]
 Enter and leave graphics mode on the tty
 
--- [font=Monospace 20px]
+-- [font=Monospace 20px] [photos/parish.jpg]
 ret = ioctl(tty->fd, KDSETMODE, KD_GRAPHICS);
 <span color="#A020F0">if</span> (ret) {
 	g_warning (<span color="#8B2252">&quot;failed to set KD_GRAPHICS mode on tty: %m\\n&quot;</span>);
 	<span color="#A020F0">return</span> <span color="#008B8B">NULL</span>;
 }
 
---
+-- [photos/bridge.jpg]
 (R) xwayland
 
 # Introduce that X wayland is a means to support legacy X clients
@@ -561,7 +595,7 @@ ret = ioctl(tty->fd, KDSETMODE, KD_GRAPHICS);
 # Introduce that the compositor is responsible for starting an X wayland server
 # for X clients to connect too.
 
---
+-- [photos/bridge.jpg]
 Starting X Wayland lazily...
 
 # Introduce the idea of loading X wayland lazily only when we have X clients
@@ -569,7 +603,7 @@ Starting X Wayland lazily...
 # 
 #
 
---
+-- [photos/bridge.jpg]
 Create a lock file
 
 # This is just a case of iterating though the display number space looking for
@@ -577,7 +611,7 @@ Create a lock file
 # existing lock files to see if they are stale) before we go ahead and open a
 # unix domain socket.
 
---
+-- [photos/bridge.jpg]
 Open a unix domain socket
 
 # Once we have found a free display number we can create a corresponding
@@ -586,12 +620,12 @@ Open a unix domain socket
 # We can immediately mark the socket as a passive, listening socket via
 # listen(2)
 
---
+-- [photos/bridge.jpg]
 Poll for the socket to be readable
 
 # Now we can poll until an x client tries to connect to the X domain socket
 
---
+-- [photos/bridge.jpg]
 socketpair() for wayland protocol before fork()
 
 # Explain that we want xwayland to be a wayland client so we want to establish
@@ -601,16 +635,16 @@ socketpair() for wayland protocol before fork()
 # give one end of the pair to xwayland. We use an "WAYLAND_SOCKET" environment
 # variable to convey the file descriptor to xwayland.
 
---
+-- [photos/bridge.jpg]
 fork() xwayland
 
---
+-- [photos/bridge.jpg]
 Wait for "xserver" binding
 
 # Once we know that xwayland has bound the "xserver" interface then we know that
 # the server is initialized and we can also start sending events.
 
---
+-- [photos/bridge.jpg]
 Pass listen socket to xwayland
 
 # So that xwayland can deal with actually accept()ing the new client connection
@@ -620,20 +654,20 @@ Pass listen socket to xwayland
 # The file descriptor is sent using the "listen_socket" event described in the
 # xserver.xml wayland protocol.
 
--- [font=Monospace 20px]
+-- [font=Monospace 20px] [photos/bridge.jpg]
 wl_client_flush (xwayland_client)
 
 # A detail to be careful about is that you flush the wayland events passing the
 # listen socket to xwayland to avoid a deadlock when trying connecting to
 # xwayland as an X client to become the window manager.
 
---
+-- [photos/bridge.jpg]
 Connect as window manager
 
 # At this point the compositor now becomes a window manager for xwayland
 # clients.
 
--- [text-align=center]
+-- [text-align=center] [photos/bridge.jpg]
 Pair surfaces & windows according
 to "set_window_id" requests.
 
@@ -644,10 +678,10 @@ to "set_window_id" requests.
 # us about which X Window corresponds to a given xwayland surface.
 
 
---
+-- [photos/bridge.jpg]
 Caveats...
 
---
+-- [photos/bridge.jpg]
 Unsynchronized X and wayland protocols
 
 # Beware of having separate X and wayland command streams. If a wayland surface
@@ -661,7 +695,7 @@ Unsynchronized X and wayland protocols
 # consistently making sure to process X events before wayland events works OK
 #FIXME more...
 
---
+-- [photos/bridge.jpg]
 Beware about forwarding mouse input
 
 # This problem mostly just applies to porting X compositors to be hybrid
@@ -671,7 +705,7 @@ Beware about forwarding mouse input
 # xwayland and rely on them being reported back via X and being consistent with
 # the current composited position of a window.
 
---
+-- [photos/bridge.jpg]
 Sync X windows position to screen
 
 # Keep X window positions in synch with composited position if want you want X
@@ -685,7 +719,7 @@ Sync X windows position to screen
 Our own compositors...
 
 
---
+-- [photos/cogland.png]
 (N) Cogland: A small Cogl based compositor
 
 # Simple mini compositor directly written using the Cogl API
@@ -693,14 +727,14 @@ Our own compositors...
 # Just supports displaying buffers. No input or window management.
 
 
---
+-- [photos/test-wayland-surface.png]
 A small Clutter based compositor
 
 # Explain about implementing the wl_input_device interface
 
 
 
---
+-- [photos/dawati-wayland.png]
 Hybrid Mutter Status
 
 --
