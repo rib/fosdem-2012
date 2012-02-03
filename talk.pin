@@ -322,6 +322,23 @@ eglBindWaylandDisplayWL()
 # to the implementation but in Mesa it will register a global object
 # with the wl_drm interface.
 
+--
+Wayland outputs
+
+
+--
+The wl_surface interface
+
+--
+The wl_shell_surface interface
+
+
+# Examples of adding key objects: compositor, wl_shm, outputs, shell
+
+# Examples of dealing with buffer attaches
+
+# Example of posting the frame callback-done events
+
 
 -- [photos/depot.jpg]
 Handling buffer attach requests
@@ -392,13 +409,6 @@ Frame callbacks
 #
 # The resource is then automatically destroyed. This is part of the
 # contract of the callback interface.
-
---
-# Examples of adding key objects: compositor, wl_shm, outputs, shell
-
-# Examples of dealing with buffer attaches
-
-# Example of posting the frame callback-done events
 
 -- [photos/white-house.jpg]
 libgbm
