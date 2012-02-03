@@ -166,6 +166,13 @@ How a compositor looks..
 --
 SHM buffers
 
+# This is a simple mechanism for sharing buffers
+#
+# This client can directly render into the system-mapped memory using
+# a software rendering library such as Cairo.
+#
+# This should probably be avoided by clients because it requires a
+# copy from the shared memory to a texture in the compositor.
 --
 EGL
 
@@ -270,11 +277,21 @@ eglBindWaylandDisplayWL()
 --
 Frame callbacks
 
-# Explain the background to the problem
+# With current X compositors it can be quite difficult to synchronize
+# rendering clients with the redraw of the compositor.
 #
-# Explain that the wl_surface interface has a "frame" request that creates a
-# wl_callback object which emits a "done" event when the compositor next
-# completes the rendering of a frame.
+# It's quite easy to end up in a situation where the client is
+# renderering at a very high frame-rate and hogging the GPU. The
+# compositor is then only able to render at a much lower frame-rate so
+# most of the frames of the client are dropped. The client's rendering
+# is therefore mostly redundant.
+#
+# Wayland tries to fix this problem by sending a 'frame done'
+# notification to all clients whenever it has completed rendering a
+# composited frame. That way clients can rate limit themselves to
+# frames that will actually get displayed.
+#
+# This can make a big power saving.
 
 --
 (R) Kernel Mode Setting Taster
@@ -405,6 +422,9 @@ Enter and leave graphics mode on the tty
 --
 (N) Cogland: A small Cogl based compositor
 
+# Simple mini compositor directly written using the Cogl API
+#
+# Just supports displaying buffers. No input or window management.
 -- [font=Monospace 20px]
 <i>Add a global object</i>
 
@@ -418,6 +438,11 @@ Enter and leave graphics mode on the tty
   compositor.wayland_shm = wl_shm_init (compositor.wayland_display,
                                         &amp;shm_callbacks);
 </tt>
+
+# This is an example of how to register an object
+#
+# This registers the global compostor object. This is the key object
+# that clients will use to create surfaces.
 --
 <i>This part is a callback</i>
 
@@ -448,6 +473,9 @@ Enter and leave graphics mode on the tty
 }
 </tt>
 
+# The callback will be called whenever a client binds the objects.
+# This creates a new resource on the compositor side to represent the
+# clients view of the object.
 -- [font=Monospace 20px]
 <i>Handling a buffer attach from a client</i>
 <tt>
@@ -465,6 +493,14 @@ Enter and leave graphics mode on the tty
   <span color="#B22222">/</span><span color="#B22222">*</span><span color="#B22222">...</span><span color="#B22222">*/</span>
 }
 </tt>
+
+# This function is called by the client whenever it has finished
+# rendering a frame to pass the new buffer to the server. The client
+# implementation of EGL will call this whenever eglSwapBuffers is
+# called.
+#
+# In the Cogland example we use a function from the Cogl API to
+# convert the buffer to a texture.
 --
 <i>Post frame callback-done events on paint</i>
 <tt>
@@ -478,6 +514,12 @@ Enter and leave graphics mode on the tty
       wl_resource_destroy (&amp;callback->resource, 0);
     }
 </tt>
+
+# This code posts an event on the resource belonging to the callback
+# registered for the notification.
+#
+# The resource is then automatically destroyed. This is part of the
+# contract of the callback interface.
 --
 # Examples of adding key objects: compositor, wl_shm, outputs, shell
 
