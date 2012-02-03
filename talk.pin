@@ -100,16 +100,24 @@ How a compositor looks..
 
 #TODO Need to demonstrate events in the xml:
 -- [font=Monospace 20px] [photos/3536874376_8faa3e977e_b.jpg]
-<span color="#B22222">&lt;!--</span><span color="#B22222"> A compositor. This object is a global.  The compositor is in
-     charge of combining the contents of multiple surfaces into one
-     displayable output. </span><span color="#B22222">--></span>
-&lt;<span color="#0000FF">interface</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">wl_compositor</span><span color="#8B2252">&quot;</span> <span color="#A0522D">version</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">1</span><span color="#8B2252">&quot;</span>>
-  <span color="#B22222">&lt;</span><span color="#B22222">!--</span><span color="#B22222"> Factory request for a surface objects. A surface is akin to a
-       window. </span><span color="#B22222">--></span>
-  &lt;<span color="#0000FF">request</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">create_surface</span><span color="#8B2252">&quot;</span>>
-    &lt;<span color="#0000FF">arg</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">id</span><span color="#8B2252">&quot;</span> <span color="#A0522D">type</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">new_id</span><span color="#8B2252">&quot;</span> <span color="#A0522D">interface</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">wl_surface</span><span color="#8B2252">&quot;</span>/>
-  &lt;/<span color="#0000FF">request</span>>
-&lt;/<span color="#0000FF">interface</span>>
+&lt;<span color="#0000FF">protocol</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">xserver</span><span color="#8B2252">&quot;</span>>
+
+  &lt;<span color="#0000FF">interface</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">xserver</span><span color="#8B2252">&quot;</span> <span color="#A0522D">version</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">1</span><span color="#8B2252">&quot;</span>>
+    &lt;<span color="#0000FF">request</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">set_window_id</span><span color="#8B2252">&quot;</span>>
+      &lt;<span color="#0000FF">arg</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">surface</span><span color="#8B2252">&quot;</span> <span color="#A0522D">type</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">object</span><span color="#8B2252">&quot;</span> <span color="#A0522D">interface</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">wl_surface</span><span color="#8B2252">&quot;</span>/>
+      &lt;<span color="#0000FF">arg</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">id</span><span color="#8B2252">&quot;</span> <span color="#A0522D">type</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">uint</span><span color="#8B2252">&quot;</span>/>
+    &lt;/<span color="#0000FF">request</span>>
+
+    &lt;<span color="#0000FF">event</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">client</span><span color="#8B2252">&quot;</span>>
+      &lt;<span color="#0000FF">arg</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">fd</span><span color="#8B2252">&quot;</span> <span color="#A0522D">type</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">fd</span><span color="#8B2252">&quot;</span>/>
+    &lt;/<span color="#0000FF">event</span>>
+
+    &lt;<span color="#0000FF">event</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">listen_socket</span><span color="#8B2252">&quot;</span>>
+      &lt;<span color="#0000FF">arg</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">fd</span><span color="#8B2252">&quot;</span> <span color="#A0522D">type</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">fd</span><span color="#8B2252">&quot;</span>/>
+    &lt;/<span color="#0000FF">event</span>>
+  &lt;/<span color="#0000FF">interface</span>>
+
+&lt;/<span color="#0000FF">protocol</span>>
 
 # Give examples of the different interfaces in a compositor
 #   - wl_display - bind
@@ -326,23 +334,22 @@ eglBindWaylandDisplayWL()
 Wayland outputs
 
 -- [font=Monospace 20px]
-  <interface name="wl_output" version="1">
-    <enum name="subpixel"> ... </enum>
-    <event name="geometry"> ... </event>
-    <enum name="mode"> ... </enum>
-    <event name="mode"> ... </event>
-  </interface>
+  &lt;<span color="#0000FF">interface</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">wl_output</span><span color="#8B2252">&quot;</span> <span color="#A0522D">version</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">1</span><span color="#8B2252">&quot;</span>>
+    &lt;<span color="#0000FF">enum</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">subpixel</span><span color="#8B2252">&quot;</span>> ... &lt;/<span color="#0000FF">enum</span>>
+    &lt;<span color="#0000FF">event</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">geometry</span><span color="#8B2252">&quot;</span>> ... &lt;/<span color="#0000FF">event</span>>
+    &lt;<span color="#0000FF">enum</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">mode</span><span color="#8B2252">&quot;</span>> ... &lt;/<span color="#0000FF">enum</span>>
+    &lt;<span color="#0000FF">event</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">mode</span><span color="#8B2252">&quot;</span>> ... &lt;/<span color="#0000FF">event</span>>
+  &lt;/<span color="#0000FF">interface</span>>
 
 --
 The Compositor object
 
 -- [font=Monospace 20px]
-  <interface name="wl_compositor" version="1">
-    <request name="create_surface">
-      <arg name="id" type="new_id" interface="wl_surface"/>
-    </request>
-  </interface>
-
+  &lt;<span color="#0000FF">interface</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">wl_compositor</span><span color="#8B2252">&quot;</span> <span color="#A0522D">version</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">1</span><span color="#8B2252">&quot;</span>>
+    &lt;<span color="#0000FF">request</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">create_surface</span><span color="#8B2252">&quot;</span>>
+      &lt;<span color="#0000FF">arg</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">id</span><span color="#8B2252">&quot;</span> <span color="#A0522D">type</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">new_id</span><span color="#8B2252">&quot;</span> <span color="#A0522D">interface</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">wl_surface</span><span color="#8B2252">&quot;</span>/>
+    &lt;/<span color="#0000FF">request</span>>
+  &lt;/<span color="#0000FF">interface</span>>
 
 # Remember to note that the xml snippet is a pseudo description
 
@@ -350,12 +357,12 @@ The Compositor object
 The wl_surface interface
 
 -- [font=Monospace 20px]
-  <interface name="wl_surface" version="1">
-    <request name="destroy" type="destructor"/>
-    <request name="attach"> ... </request>
-    <request name="damage"> ... </request>
-    <request name="frame"> ... </request>
-  </interface>
+  &lt;<span color="#0000FF">interface</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">wl_surface</span><span color="#8B2252">&quot;</span> <span color="#A0522D">version</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">1</span><span color="#8B2252">&quot;</span>>
+    &lt;<span color="#0000FF">request</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">destroy</span><span color="#8B2252">&quot;</span> <span color="#A0522D">type</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">destructor</span><span color="#8B2252">&quot;</span>/>
+    &lt;<span color="#0000FF">request</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">attach</span><span color="#8B2252">&quot;</span>> ... &lt;/<span color="#0000FF">request</span>>
+    &lt;<span color="#0000FF">request</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">damage</span><span color="#8B2252">&quot;</span>> ... &lt;/<span color="#0000FF">request</span>>
+    &lt;<span color="#0000FF">request</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">frame</span><span color="#8B2252">&quot;</span>> ... &lt;/<span color="#0000FF">request</span>>
+  &lt;/<span color="#0000FF">interface</span>>
 
 -- [photos/depot.jpg]
 Handling buffer attach requests
@@ -425,18 +432,17 @@ Frame callbacks
 The wl_shell_surface interface
 
 -- [font=Monospace 20px]
-  <interface name="wl_shell_surface" version="1">
-    <request name="move"> ... </request>
-    <enum name="resize"> ... </enum>
-    <request name="resize"> ... </request>
-    <request name="set_toplevel"/>
-    <request name="set_transient"> ... </request>
-    <request name="set_fullscreen"/>
-    <request name="set_popup"> ... </request>
-    <event name="configure"> ... </event>
-    <event name="popup_done"/>
-  </interface>
-
+  &lt;<span color="#0000FF">interface</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">wl_shell_surface</span><span color="#8B2252">&quot;</span> <span color="#A0522D">version</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">1</span><span color="#8B2252">&quot;</span>>
+    &lt;<span color="#0000FF">request</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">move</span><span color="#8B2252">&quot;</span>> ... &lt;/<span color="#0000FF">request</span>>
+    &lt;<span color="#0000FF">enum</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">resize</span><span color="#8B2252">&quot;</span>> ... &lt;/<span color="#0000FF">enum</span>>
+    &lt;<span color="#0000FF">request</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">resize</span><span color="#8B2252">&quot;</span>> ... &lt;/<span color="#0000FF">request</span>>
+    &lt;<span color="#0000FF">request</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">set_toplevel</span><span color="#8B2252">&quot;</span>/>
+    &lt;<span color="#0000FF">request</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">set_transient</span><span color="#8B2252">&quot;</span>> ... &lt;/<span color="#0000FF">request</span>>
+    &lt;<span color="#0000FF">request</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">set_fullscreen</span><span color="#8B2252">&quot;</span>/>
+    &lt;<span color="#0000FF">request</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">set_popup</span><span color="#8B2252">&quot;</span>> ... &lt;/<span color="#0000FF">request</span>>
+    &lt;<span color="#0000FF">event</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">configure</span><span color="#8B2252">&quot;</span>> ... &lt;/<span color="#0000FF">event</span>>
+    &lt;<span color="#0000FF">event</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">popup_done</span><span color="#8B2252">&quot;</span>/>
+  &lt;/<span color="#0000FF">interface</span>>
 
 # This code posts an event on the resource belonging to the callback
 # registered for the notification.
