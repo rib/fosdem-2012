@@ -91,8 +91,7 @@ Clients are King
 # compositor...
 
 -- [photos/3536874376_8faa3e977e_b.jpg]
-How a compositor looks..
-• Interfaces, Events & Requests
+Interfaces, Events & Requests
 
 # All interactions over the wayland protocol happen according to interfaces that
 # are declared in XML
@@ -159,10 +158,6 @@ Objects
     g_error (<span color="#8B2252">&quot;Failed to register wayland compositor object&quot;</span>);
 </tt>
 
--- [photos/3536874376_8faa3e977e_b.jpg]
-Binding an interface
-
-# Explain how clients bind to a server object interface to create a local proxy object
 # Whenever a client binds an object then the compositor constructs a server side
 # resource representing the clients view of that object.
 
@@ -331,7 +326,7 @@ eglBindWaylandDisplayWL()
 # with the wl_drm interface.
 
 --
-Wayland outputs
+(R) Wayland outputs
 
 -- [font=Monospace 20px]
   &lt;<span color="#0000FF">interface</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">wl_output</span><span color="#8B2252">&quot;</span> <span color="#A0522D">version</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">1</span><span color="#8B2252">&quot;</span>>
@@ -451,7 +446,7 @@ The wl_shell_surface interface
 # contract of the callback interface.
 
 -- [photos/white-house.jpg]
-libgbm
+(N) libgbm
 
 #Makes allocating drm buffers easy
 #
@@ -563,7 +558,7 @@ drmModeSetCrtc (fd, encoder->crtc_id, fb_id,
 		&amp;mode);
 
 -- [photos/parish.jpg]
-TTY handling
+(N) TTY handling
 
 -- [photos/parish.jpg]
 Block input to the tty
@@ -722,11 +717,11 @@ Sync X windows position to screen
 # up menus offscreen or crossing over multiple screens.
 
 --
-Our own compositors...
+(N) Our own compositors...
 
 
 -- [photos/cogland.png]
-(N) Cogland: A small Cogl based compositor
+Cogland: A small Cogl based compositor
 
 # Simple mini compositor directly written using the Cogl API
 #
@@ -737,8 +732,6 @@ Our own compositors...
 A small Clutter based compositor
 
 # Explain about implementing the wl_input_device interface
-
-
 
 -- [photos/dawati-wayland.png]
 Hybrid Mutter Status
@@ -766,7 +759,7 @@ Mutter Status
 # Wayland clients are still somewhat side-band, not being involved in window stacking for example.
 
 -- [photos/5338839892_7f8d2535ed_b.jpg]
-(N) Where should you start?
+Where should you start?
 
 -- [photos/5338839892_7f8d2535ed_b.jpg] [font=40px] [text-align=center]
 <span size="large"><b>Weston</b></span>
