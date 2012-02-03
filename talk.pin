@@ -373,7 +373,7 @@ Frame callbacks
 #
 # This can make a big power saving.
 
--- [photos/depot.jpg]
+-- [photos/depot.jpg] [font=25px]
 <i>Post frame callback-done events on paint</i>
 <tt>
   <span color="#A020F0">while</span> (!g_queue_is_empty (&amp;compositor->frame_callbacks))
@@ -406,18 +406,18 @@ libgbm
 #Makes allocating drm buffers easy
 #
 
--- [font=Monospace 20px] [photos/white-house.jpg]
+-- [font=Monospace 40px] [photos/white-house.jpg]
 gbm_create_device()
 
--- [font=Monospace 20px] [photos/white-house.jpg]
+-- [font=Monospace 40px] [photos/white-house.jpg]
 eglGetDisplay() with gbm device
 
--- [font=Monospace 20px] [photos/white-house.jpg]
+-- [font=Monospace 40px] [photos/white-house.jpg]
 struct gbm_surface
 
 #Explain that a gbm surface is just a swap-chain of buffers but there's nothing KMS specific about a gbm surface
 
--- [font=Monospace 20px] [photos/white-house.jpg]
+-- [font=Monospace 40px] [photos/white-house.jpg]
 struct gbm_surface *gbm_surface_create()
 
 #CAVEAT: This api is in flux!
@@ -425,14 +425,14 @@ struct gbm_surface *gbm_surface_create()
 
 #Encapsulates the data structure of swap chain but doesn't actively control your display hardware
 
--- [font=Monospace 20px] [photos/white-house.jpg]
+-- [font=Monospace 40px] [photos/white-house.jpg]
 eglCreateWindowSurface() with gbm_surface
 
 
--- [font=Monospace 20px] [photos/white-house.jpg]
+-- [font=Monospace 40px] [photos/white-house.jpg]
 eglSwapBuffers()
 
--- [font=Monospace 20px] [photos/white-house.jpg]
+-- [font=Monospace 40px] [photos/white-house.jpg]
 gbm_surface_lock_front_buffer()
 gbm_surface_release_buffer()
 
@@ -457,21 +457,20 @@ resources = drmModeGetResources (fd);
 Look for connected connector...
 
 -- [font=Monospace 20px] [photos/river.jpg]
-  for (i = 0; i < resources->count_connectors; i++)
+  <span color="#A020F0">for</span> (i = 0; i &lt; resources->count_connectors; i++)
     {
-      drmModeConnector *connector =
+      <span color="#228B22">drmModeConnecto</span><span color="#228B22">r</span> *<span color="#A0522D">connector</span> =
         drmModeGetConnector (fd, resources->connectors[i]);
 
-      if (connector &&
-          connector->connection == DRM_MODE_CONNECTED &&
-          connector->count_modes > 0 &&
+      <span color="#A020F0">if</span> (connector &amp;&amp;
+          connector->connection == DRM_MODE_CONNECTED &amp;&amp;
+          connector->count_modes > 0 &amp;&amp;
           !is_connector_excluded (connector->connector_id,
                                   excluded_connectors,
                                   n_excluded_connectors))
-        return connector;
+        <span color="#A020F0">return</span> connector;
       drmModeFreeConnector(connector);
     }
-
 -- [photos/river.jpg]
 Pick an encoder...
 
@@ -488,30 +487,30 @@ saved_crtc = drmModeGetCrtc (fd, encoder->crtc_id);
 Pick a mode...
 
 -- [font=Monospace 20px] [photos/river.jpg]
-drmModeModeInfo mode = connector->modes[0];
+<span color="#228B22">drmModeModeInf</span><span color="#228B22">o</span> <span color="#A0522D">mode</span> = connector->modes[0];
 
 -- [photos/river.jpg]
 Create a KMS framebuffer handle
 
 -- [font=Monospace 20px] [photos/river.jpg]
-uint32_t fb_id;
+<span color="#228B22">uint32_</span><span color="#228B22">t</span> <span color="#A0522D">fb_id</span>;
 
 handle = gbm_bo_get_handle (kms_onscreen->next_bo).u32;
 pitch = gbm_bo_get_pitch (kms_onscreen->next_bo);
 
 drmModeAddFB (fd, width, height,
-	      24 /* depth */, 32 /* bpp */, pitch,
-	      handle, &fb_id);
+	      24 <span color="#B22222">/* </span><span color="#B22222">depth </span><span color="#B22222">*/</span>, 32 <span color="#B22222">/* </span><span color="#B22222">bpp </span><span color="#B22222">*/</span>, pitch,
+	      handle, &amp;fb_id);
 
 -- [photos/river.jpg]
 Set the CRTC mode
 
 -- [font=Monospace 20px] [photos/river.jpg]
 drmModeSetCrtc (fd, encoder->crtc_id, fb_id,
-		0 /* x */,
-		0 /* y */,
-		connector_id, 1 /* n_connectors */,
-		&mode);
+		0 <span color="#B22222">/* </span><span color="#B22222">x </span><span color="#B22222">*/</span>,
+		0 <span color="#B22222">/* </span><span color="#B22222">y </span><span color="#B22222">*/</span>,
+		connector_id, 1 <span color="#B22222">/* </span><span color="#B22222">n_connectors </span><span color="#B22222">*/</span>,
+		&amp;mode);
 
 --
 TTY handling
@@ -529,9 +528,9 @@ Handle signals for vt switching
 mode.mode = VT_PROCESS;
 mode.relsig = SIGUSR1;
 mode.acqsig = SIGUSR2;
-if (ioctl(tty->fd, VT_SETMODE, &mode) < 0) {
-	g_warning ("failed to take control of vt handling\n");
-	return NULL;
+<span color="#A020F0">if</span> (ioctl(tty->fd, VT_SETMODE, &amp;mode) &lt; 0) {
+	g_warning (<span color="#8B2252">&quot;failed to take control of vt handling\\n&quot;</span>);
+	<span color="#A020F0">return</span> <span color="#008B8B">NULL</span>;
 }
 
 --
@@ -539,9 +538,9 @@ Enter and leave graphics mode on the tty
 
 -- [font=Monospace 20px]
 ret = ioctl(tty->fd, KDSETMODE, KD_GRAPHICS);
-if (ret) {
-	g_warning ("failed to set KD_GRAPHICS mode on tty: %m\n");
-	return NULL;
+<span color="#A020F0">if</span> (ret) {
+	g_warning (<span color="#8B2252">&quot;failed to set KD_GRAPHICS mode on tty: %m\\n&quot;</span>);
+	<span color="#A020F0">return</span> <span color="#008B8B">NULL</span>;
 }
 
 --
@@ -624,8 +623,9 @@ Connect as window manager
 # At this point the compositor now becomes a window manager for xwayland
 # clients.
 
---
-Pair surfaces & windows according to "set_window_id" requests.
+-- [text-align=center]
+Pair surfaces & windows according
+to "set_window_id" requests.
 
 # Once xwayland is initialized we can now expect "create_surface" requests to
 # the wl_compositor object that correspond to top level X windows.
