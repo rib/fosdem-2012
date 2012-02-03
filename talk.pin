@@ -9,6 +9,8 @@
 # compositor based on some of our early experiences. So far we've written three
 # compositors; each progressively more capable than the last and found it a
 # good way of learning what's involved.
+#
+# Proviso: Significant portions of what we talk about here is evolving rapidly.
 
 -- []
 Robert Bragg
@@ -275,9 +277,77 @@ Frame callbacks
 # completes the rendering of a frame.
 
 --
-(R) Kernel Mode Setting
+(R) Kernel Mode Setting Taster
 
-#Probably just do a fly by explanation....
+--
+Connectors, Encoders & CRTCs
+
+--
+Query the KMS resources...
+
+-- [font=Monospace 20px]
+resources = drmModeGetResources (fd);
+
+--
+Look for connected connector...
+
+-- [font=Monospace 20px]
+  for (i = 0; i < resources->count_connectors; i++)
+    {
+      drmModeConnector *connector =
+        drmModeGetConnector (fd, resources->connectors[i]);
+
+      if (connector &&
+          connector->connection == DRM_MODE_CONNECTED &&
+          connector->count_modes > 0 &&
+          !is_connector_excluded (connector->connector_id,
+                                  excluded_connectors,
+                                  n_excluded_connectors))
+        return connector;
+      drmModeFreeConnector(connector);
+    }
+
+--
+Pick an encoder...
+
+-- [font=Monospace 20px]
+encoder = drmModeGetEncoder (fd, connector->encoders[0]);
+
+--
+Save the CRTC mode
+
+-- [font=Monospace 20px]
+saved_crtc = drmModeGetCrtc (fd, encoder->crtc_id);
+
+--
+Pick a mode...
+
+-- [font=Monospace 20px]
+drmModeModeInfo mode = connector->modes[0];
+
+
+--
+Create a KMS framebuffer handle
+
+-- [font=Monospace 20px]
+uint32_t fb_id;
+
+handle = gbm_bo_get_handle (kms_onscreen->next_bo).u32;
+pitch = gbm_bo_get_pitch (kms_onscreen->next_bo);
+
+drmModeAddFB (fd, width, height,
+	      24 /* depth */, 32 /* bpp */, pitch,
+	      handle, &fb_id);
+
+--
+Set the CRTC mode
+
+-- [font=Monospace 20px]
+drmModeSetCrtc (fd, encoder->crtc_id, fb_id,
+		0 /* x */,
+		0 /* y */,
+		connector_id, 1 /* n_connectors */,
+		&mode);
 
 --
 libgbm
@@ -315,9 +385,8 @@ eglSwapBuffers()
 gbm_surface_lock_front_buffer()
 gbm_surface_release_buffer()
 
-# Used to be namedgbm_surface_get/release_bo()
+# Used to be named gbm_surface_get/release_bo()
 
-#TODO: explain using the KMS api
 
 --
 TTY handling
@@ -464,7 +533,7 @@ Poll for the socket to be readable
 --
 socketpair() for wayland protocol before fork()
 
-# Explain that we want xwayland to be a wayland client so we want to estabilish
+# Explain that we want xwayland to be a wayland client so we want to establish
 # a socket connection between the compositor and xwayland.
 #
 # We create a socketpair() just before fork()ing to run xwayland so that we can
@@ -536,15 +605,19 @@ Beware about forwarding mouse input
 # This problem mostly just applies to porting X compositors to be hybrid
 # compositor since they will expect to handle X motion events e.g. for moving
 # windows. Compositors should only handle mouse events coming directly into the
-# compositor because it's not reliable to feed events to xwayland and rely on
-# them being reported back via X and exactly matching the original position
-# because the underlying X window may be in the process of being moved.
+# compositor (e.g. from evdev) because it's not reliable to feed events to
+# xwayland and rely on them being reported back via X and being consistent with
+# the current composited position of a window.
 
 --
 Sync X windows position to screen
 
-# Keep X window positions in synch with composited position if want menus to behave
-
+# Keep X window positions in synch with composited position if want you want X
+# toolkit menus to behave correctly.
+#
+# xwayland synchronizes its xrandr state according the wayland compositor
+# outputs and X toolkits use the xrandr state to ensure they don't position pop
+# up menus offscreen or crossing over multiple screens.
 
 --
 Hybrid Mutter Status
@@ -576,6 +649,7 @@ Mutter Status
 
 --
 (N) Where should you start?
+
 
 # Well there's quite a bit of code to reference now:
 #   There's obviously the Weston compositor which you should definitely take a look at.
