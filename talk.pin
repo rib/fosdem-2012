@@ -4,12 +4,13 @@
 -- [photos/2889678711_50c3e81405_b.jpg]
 (R) Writing a Wayland Compositor
 
-# The idea of this talk is to hopefully give some insight into writing a wayland
-# compositor based on some of our early experiences. So far we've written three
-# compositors; each progressively more capable than the last and found it a
-# good way of learning what's involved.
+# The idea of this talk is to hopefully give some insight into writing
+# a wayland compositor based on some of our early experiences. So far
+# we've written three compositors; each progressively more capable
+# than the last and found it a good way of learning what's involved.
 #
-# Proviso: Significant portions of what we talk about here is evolving rapidly.
+# Proviso: Significant portions of what we talk about here is evolving
+# rapidly.
 
 -- [photos/2889678711_50c3e81405_b.jpg]
 Robert Bragg
@@ -17,8 +18,8 @@ Robert Bragg
 # - Intel Open Source Technology Center, based in London
 # - Maintainer for the Cogl 3D graphics API
 # - Done lots of work on Clutter
-# - I've done a fair amount of work on Window managers and Graphics drivers
-#   in the past.
+# - I've done a fair amount of work on Window managers and Graphics
+#   drivers in the past.
 
 -- [photos/2889678711_50c3e81405_b.jpg]
 (N) Neil Roberts
@@ -31,50 +32,51 @@ Robert Bragg
 The current X
 architecture
 
-# The main thing to point out here is that the X architecture requires us to
-# put the compositor into a separate process.
+# The main thing to point out here is that the X architecture requires
+# us to put the compositor into a separate process.
 #
-# Because the xserver doesn't know about the compositor scenegraph used to
-# render windows its currently basically infeasible to support input
-# transformations with this architecture.
+# Because the xserver doesn't know about the compositor scenegraph
+# used to render windows its currently basically infeasible to support
+# input transformations with this architecture.
 #
-# Because the compositor isn't directly responsible for display output it's
-# also very difficult to have fine grained control over what gets displayed;
-# for example compositors want to control when fullscreen applications should
-# be scanned out directly by the display hardware and they also want to take
-# full advantage of the displays overlay capabilities for blending sprites, ui
-# and video layers together.
+# Because the compositor isn't directly responsible for display output
+# it's also very difficult to have fine grained control over what gets
+# displayed; for example compositors want to control when fullscreen
+# applications should be scanned out directly by the display hardware
+# and they also want to take full advantage of the displays overlay
+# capabilities for blending sprites, ui and video layers together.
 
 -- [stage-color=black] [wlarch.png] [bottom-left]
 The new
 architecture
 
-# The thing to point out here is that wayland combines the compositor into the
-# server process.
+# The thing to point out here is that wayland combines the compositor
+# into the server process.
 #
-# Input redirection is now trivial because the input devices and the scenegraph
-# are now owned by the same process.
+# Input redirection is now trivial because the input devices and the
+# scenegraph are now owned by the same process.
 #
-# We can totally control the display hardware in the compositor so we can do
-# whatever
+# We can totally control the display hardware in the compositor so we
+# can do whatever
 
 -- [photos/1346915953_edab99dab8_b.jpg]
 libwayland-server
 
-#Explain that this lib provides just the protocol marshaling stuff + some utils
-#for dealing with input grabs, data device,
+#Explain that this lib provides just the protocol marshaling stuff +
+#some utils for dealing with input grabs, data device,
 
 #Note: there's nothing specific to the rendering architecture here
 
 -- [photos/1346915953_edab99dab8_b.jpg]
 Clients in their own world
 
-# Explain that client surfaces all have a private coordinate space and its not
-# possible to discover the surfaces of other clients like you can under X.
+# Explain that client surfaces all have a private coordinate space and
+# its not possible to discover the surfaces of other clients like you
+# can under X.
 #
-# This makes the compositor more free to place windows wherever it wants and
-# apply whatever transformations it likes without having to describe those
-# transformations to the clients
+# This makes the compositor more free to place windows wherever it
+# wants and apply whatever transformations it likes without having to
+# describe those transformations to the clients
 
 -- [photos/1346915953_edab99dab8_b.jpg]
 Clients are King
@@ -87,14 +89,14 @@ Clients are King
 -- [photos/3536874376_8faa3e977e_b.jpg]
 (R) How a compositor looks..
 
-# We're going to run through the basic design and components of a Wayland
-# compositor...
+# We're going to run through the basic design and components of a
+# Wayland compositor...
 
 -- [photos/3536874376_8faa3e977e_b.jpg]
 Interfaces, Events & Requests
 
-# All interactions over the wayland protocol happen according to interfaces that
-# are declared in XML
+# All interactions over the wayland protocol happen according to
+# interfaces that are declared in XML
 
 
 #TODO Need to demonstrate events in the xml:
@@ -126,14 +128,14 @@ Interfaces, Events & Requests
 #   - wl_input_device
 
 
-# An interface defines a set of requests and events which can each have a name
-# and a set of arguments with names and types.
+# An interface defines a set of requests and events which can each
+# have a name and a set of arguments with names and types.
 #
 # Requests are used for clients to ask something of the compositor.
 #
-# Explain that requests can't send synchronous replies, which makes sense for a
-# cross process IPC protocol, but instead compositors can send events to send
-# information out to clients.
+# Explain that requests can't send synchronous replies, which makes
+# sense for a cross process IPC protocol, but instead compositors can
+# send events to send information out to clients.
 
 #Example of sending an event from a compositor
 #      wl_resource_post_event (&callback->resource,
@@ -144,7 +146,8 @@ Interfaces, Events & Requests
 Objects
 
 # Explain that interfaces are implemented by objects.
-# Explain how compositors advertise objects implementing interfaces to clients
+# Explain how compositors advertise objects implementing interfaces to
+# clients
 # - global objects that get advertised via events when a client first connects
 
 -- [font=Monospace 20px] [photos/3536874376_8faa3e977e_b.jpg]
@@ -158,8 +161,8 @@ Objects
     g_error (<span color="#8B2252">&quot;Failed to register wayland compositor object&quot;</span>);
 </tt>
 
-# Whenever a client binds an object then the compositor constructs a server side
-# resource representing the clients view of that object.
+# Whenever a client binds an object then the compositor constructs a
+# server side resource representing the clients view of that object.
 
 #E.g.
 #  if (strcmp (interface, "wl_compositor") == 0)
@@ -279,8 +282,9 @@ EGL in Clients...
 </tt>
 
 # The client needs a handle to represent the compositor's global
-# wl_compositor interface. It can get this by handle the 'global' event on
-# the wl_display interface and then binding the object as shown.
+# wl_compositor interface. It can get this by handle the 'global'
+# event on the wl_display interface and then binding the object as
+# shown.
 -- [photos/depot.jpg]
 wl_compositor::create_surface
 
@@ -310,20 +314,20 @@ eglCreateWindowSurface(EGLNativeWindowType)
 -- [photos/depot.jpg]
 EGL in the Compositor
 
-# On the compositor side the compositor can use whatever EGL platform it likes.
-# For example it could use an X display and an X window as a surface to create
-# a compositor that is nested under X. However the EGL implementation has
-# to implement this one extension...
+# On the compositor side the compositor can use whatever EGL platform
+# it likes. For example it could use an X display and an X window as a
+# surface to create a compositor that is nested under X. However the
+# EGL implementation has to implement this one extension...
 -- [photos/depot.jpg]
 EGL_WL_bind_wayland_display
 # ... this extension contains one function...
 -- [font=Monospace 20px] [photos/depot.jpg]
 eglBindWaylandDisplayWL()
 
-# ... The compositor must call this to tell the EGL implementation that
-# it should accept buffers passed in from clients. How this works is up
-# to the implementation but in Mesa it will register a global object
-# with the wl_drm interface.
+# ... The compositor must call this to tell the EGL implementation
+# that it should accept buffers passed in from clients. How this works
+# is up to the implementation but in Mesa it will register a global
+# object with the wl_drm interface.
 
 --
 (R) Wayland outputs
@@ -460,7 +464,8 @@ eglGetDisplay() with gbm device
 -- [font=Monospace 40px] [photos/white-house.jpg]
 struct gbm_surface
 
-#Explain that a gbm surface is just a swap-chain of buffers but there's nothing KMS specific about a gbm surface
+#Explain that a gbm surface is just a swap-chain of buffers but
+#there's nothing KMS specific about a gbm surface
 
 -- [font=Monospace 40px] [photos/white-house.jpg]
 struct gbm_surface *gbm_surface_create()
@@ -468,7 +473,8 @@ struct gbm_surface *gbm_surface_create()
 #CAVEAT: This api is in flux!
 #Credit Ander Conselvan de Oleveira for these patches
 
-#Encapsulates the data structure of swap chain but doesn't actively control your display hardware
+#Encapsulates the data structure of swap chain but doesn't actively
+#control your display hardware
 
 -- [font=Monospace 40px] [photos/white-house.jpg]
 eglCreateWindowSurface() with gbm_surface
@@ -593,24 +599,24 @@ ret = ioctl(tty->fd, KDSETMODE, KD_GRAPHICS);
 
 # Introduce that X wayland is a means to support legacy X clients
 #
-# Introduce that the compositor is responsible for starting an X wayland server
-# for X clients to connect too.
+# Introduce that the compositor is responsible for starting an X
+# wayland server for X clients to connect too.
 
 -- [photos/bridge.jpg]
 Starting X Wayland lazily...
 
-# Introduce the idea of loading X wayland lazily only when we have X clients
-# that require an xserver for compatibility.
+# Introduce the idea of loading X wayland lazily only when we have X
+# clients that require an xserver for compatibility.
 # 
 #
 
 -- [photos/bridge.jpg]
 Create a lock file
 
-# This is just a case of iterating though the display number space looking for
-# a free display number so we can open a free /tmp/.X11-lock file (checking
-# existing lock files to see if they are stale) before we go ahead and open a
-# unix domain socket.
+# This is just a case of iterating though the display number space
+# looking for a free display number so we can open a free
+# /tmp/.X11-lock file (checking existing lock files to see if they are
+# stale) before we go ahead and open a unix domain socket.
 
 -- [photos/bridge.jpg]
 Open a unix domain socket
@@ -632,9 +638,10 @@ socketpair() for wayland protocol before fork()
 # Explain that we want xwayland to be a wayland client so we want to establish
 # a socket connection between the compositor and xwayland.
 #
-# We create a socketpair() just before fork()ing to run xwayland so that we can
-# give one end of the pair to xwayland. We use an "WAYLAND_SOCKET" environment
-# variable to convey the file descriptor to xwayland.
+# We create a socketpair() just before fork()ing to run xwayland so
+# that we can give one end of the pair to xwayland. We use an
+# "WAYLAND_SOCKET" environment variable to convey the file descriptor
+# to xwayland.
 
 -- [photos/bridge.jpg]
 fork() xwayland
@@ -642,25 +649,28 @@ fork() xwayland
 -- [photos/bridge.jpg]
 Wait for "xserver" binding
 
-# Once we know that xwayland has bound the "xserver" interface then we know that
-# the server is initialized and we can also start sending events.
+# Once we know that xwayland has bound the "xserver" interface then we
+# know that the server is initialized and we can also start sending
+# events.
 
 -- [photos/bridge.jpg]
 Pass listen socket to xwayland
 
-# So that xwayland can deal with actually accept()ing the new client connection
-# and also handling further client connections the file descriptor for the unix
-# domain socket is passed over the wayland protocol to xwayland.
+# So that xwayland can deal with actually accept()ing the new client
+# connection and also handling further client connections the file
+# descriptor for the unix domain socket is passed over the wayland
+# protocol to xwayland.
 
-# The file descriptor is sent using the "listen_socket" event described in the
-# xserver.xml wayland protocol.
+# The file descriptor is sent using the "listen_socket" event
+# described in the xserver.xml wayland protocol.
 
 -- [font=Monospace 20px] [photos/bridge.jpg]
 wl_client_flush (xwayland_client)
 
-# A detail to be careful about is that you flush the wayland events passing the
-# listen socket to xwayland to avoid a deadlock when trying connecting to
-# xwayland as an X client to become the window manager.
+# A detail to be careful about is that you flush the wayland events
+# passing the listen socket to xwayland to avoid a deadlock when
+# trying connecting to xwayland as an X client to become the window
+# manager.
 
 -- [photos/bridge.jpg]
 Connect as window manager
@@ -672,11 +682,13 @@ Connect as window manager
 Pair surfaces & windows according
 to "set_window_id" requests.
 
-# Once xwayland is initialized we can now expect "create_surface" requests to
-# the wl_compositor object that correspond to top level X windows.
+# Once xwayland is initialized we can now expect "create_surface"
+# requests to the wl_compositor object that correspond to top level X
+# windows.
 #
-# We can also expect "set_window_id" events over the wayland protocol to inform
-# us about which X Window corresponds to a given xwayland surface.
+# We can also expect "set_window_id" events over the wayland protocol
+# to inform us about which X Window corresponds to a given xwayland
+# surface.
 
 
 -- [photos/bridge.jpg]
@@ -685,11 +697,11 @@ Caveats...
 -- [photos/bridge.jpg]
 Unsynchronized X and wayland protocols
 
-# Beware of having separate X and wayland command streams. If a wayland surface
-# for an x client is destroyed you might want to know if the window was just
-# unmapped or really destroyed which is something you learn from the X protocol
-# so now your in the awkward situation of having to match corresponding events
-# in each stream.
+# Beware of having separate X and wayland command streams. If a
+# wayland surface for an x client is destroyed you might want to know
+# if the window was just unmapped or really destroyed which is
+# something you learn from the X protocol so now your in the awkward
+# situation of having to match corresponding events in each stream.
 #
 # Perhaps at some point it could be better to proxy one protocol over the other
 # so we know things are synchronized but for now at least we've found that
@@ -699,22 +711,24 @@ Unsynchronized X and wayland protocols
 -- [photos/bridge.jpg]
 Beware about forwarding mouse input
 
-# This problem mostly just applies to porting X compositors to be hybrid
-# compositor since they will expect to handle X motion events e.g. for moving
-# windows. Compositors should only handle mouse events coming directly into the
-# compositor (e.g. from evdev) because it's not reliable to feed events to
-# xwayland and rely on them being reported back via X and being consistent with
-# the current composited position of a window.
+# This problem mostly just applies to porting X compositors to be
+# hybrid compositor since they will expect to handle X motion events
+# e.g. for moving windows. Compositors should only handle mouse events
+# coming directly into the compositor (e.g. from evdev) because it's
+# not reliable to feed events to xwayland and rely on them being
+# reported back via X and being consistent with the current composited
+# position of a window.
 
 -- [photos/bridge.jpg]
 Sync X windows position to screen
 
-# Keep X window positions in synch with composited position if want you want X
-# toolkit menus to behave correctly.
+# Keep X window positions in synch with composited position if want
+# you want X toolkit menus to behave correctly.
 #
-# xwayland synchronizes its xrandr state according the wayland compositor
-# outputs and X toolkits use the xrandr state to ensure they don't position pop
-# up menus offscreen or crossing over multiple screens.
+# xwayland synchronizes its xrandr state according the wayland
+# compositor outputs and X toolkits use the xrandr state to ensure
+# they don't position pop up menus offscreen or crossing over multiple
+# screens.
 
 --
 (N) Our own compositors...
@@ -739,16 +753,21 @@ Hybrid Mutter Status
 --
 First a quick intro for Mutter
 
-# Introduce what mutter is; GNOME/X compositor framework for writing Clutter based compositors.
+# Introduce what mutter is; GNOME/X compositor framework for writing
+# Clutter based compositors.
 
 
 # Summarize some of the mutter specifics
-#   - We make MetaWindows + MetaWindowActors and MetaShapedTextures just as is
-#     done for X windows
+#   - We make MetaWindows + MetaWindowActors and MetaShapedTextures
+#     just as is done for X windows
 
-# Explain that in general the ways in which a hybrid compositor gets developed is going to vary a lot between code bases
-# Some differences with how X and wayland clients are dealt with include
-# - Resizing: instead of the WM overriding the size of client windows, wayland clients post new buffers and the compositor just has to deal with whatever size they are.
+# Explain that in general the ways in which a hybrid compositor gets
+# developed is going to vary a lot between code bases Some differences
+# with how X and wayland clients are dealt with include
+#
+# - Resizing: instead of the WM overriding the size of client windows,
+#   wayland clients post new buffers and the compositor just has to
+#   deal with whatever size they are.
 # - The compositor no longer needs to draw decorations for each client window
 
 
@@ -756,7 +775,9 @@ First a quick intro for Mutter
 Mutter Status
 
 # Basically working
-# Wayland clients are still somewhat side-band, not being involved in window stacking for example.
+#
+# Wayland clients are still somewhat side-band, not being involved in
+# window stacking for example.
 
 -- [photos/5338839892_7f8d2535ed_b.jpg]
 Where should you start?
