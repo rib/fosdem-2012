@@ -355,6 +355,9 @@ Wayland outputs
 # Note that this interface is stripped to just give an outline of what it deals
 # with
 
+-- [photos/2889657735_5234d83de4_b.jpg]
+Handling Output Binding..
+
 -- [font=Monospace 20px] [photos/2889657735_5234d83de4_b.jpg]
 <span color="#A020F0">struct</span> <span color="#228B22">wl_resourc</span><span color="#228B22">e</span> *<span color="#A0522D">resource</span> =
   wl_client_add_object (client, &amp;wl_output_interface, <span color="#008B8B">NULL</span>, id, data);
@@ -491,6 +494,9 @@ Frame callbacks
 # composited frame. That way clients can rate limit themselves to
 # frames that will actually get displayed.
 #
+# XXX: Explain that clients explicitly create a frame callback object
+# using the wl_surface::frame request.
+#
 # This can make a big power saving.
 
 -- [photos/2889657735_5234d83de4_b.jpg] [font=25px]
@@ -507,8 +513,17 @@ Frame callbacks
     }
 </tt>
 
+# This code posts an event on the resource belonging to the callback
+# registered for the notification.
+#
+# The resource is then automatically destroyed. This is part of the
+# contract of the callback interface.
+
 -- [photos/2889657735_5234d83de4_b.jpg]
-The wl_shell_surface interface
+The wl_shell and wl_shell_surface interface
+
+# Just skim over the "wl_shell" interface only saying that it has a
+# "get_shell_surface" request that's given a wl_surface id.
 
 -- [font=Monospace 20px] [photos/2889657735_5234d83de4_b.jpg]
   &lt;<span color="#0000FF">interface</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">wl_shell_surface</span><span color="#8B2252">&quot;</span> <span color="#A0522D">version</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">1</span><span color="#8B2252">&quot;</span>>
@@ -523,11 +538,16 @@ The wl_shell_surface interface
     &lt;<span color="#0000FF">event</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">popup_done</span><span color="#8B2252">&quot;</span>/>
   &lt;/<span color="#0000FF">interface</span>>
 
-# This code posts an event on the resource belonging to the callback
-# registered for the notification.
+# Explain that the wl_shell_surface interface provides some higher level
+# requests that start to relate to the varying policies of the windowing
+# system. It starts to encapsulate some of the things you would see in the X
+# ICCCM or EWMH standards but currently is very constrained to the essentials
+# that can be applied to basically any compositing environment.
 #
-# The resource is then automatically destroyed. This is part of the
-# contract of the callback interface.
+# It's likely that this interface will evolve as more advanced wayland
+# environments get developed and it's also very likely for specialised
+# environments to provide their own shell_surface like extensions to allow more
+# custom surface related requests and events.
 
 -- [photos/white-house.jpg]
 libgbm
