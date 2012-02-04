@@ -535,13 +535,19 @@ libgbm
 #
 #Makes allocating drm buffers easy
 #
+#CAVEAT: This api is in flux!
+#Credit Ander Conselvan de Oleveira for these patches
 
 -- [font=Monospace 40px] [photos/white-house.jpg]
 gbm_create_device()
-
+#
+# Get an object representing the gbm state.
+#
+# Takes the DRI fd
 -- [font=Monospace 40px] [photos/white-house.jpg]
 eglGetDisplay() with gbm device
-
+# We can use the result from gbm_create_device as an
+# EGLNativeDisplayType to create an EGL display.
 -- [font=Monospace 40px] [photos/white-house.jpg]
 struct gbm_surface
 
@@ -551,27 +557,23 @@ struct gbm_surface
 -- [font=Monospace 40px] [photos/white-house.jpg]
 struct gbm_surface *gbm_surface_create()
 
-#CAVEAT: This api is in flux!
-#Credit Ander Conselvan de Oleveira for these patches
-
-#Encapsulates the data structure of swap chain but doesn't actively
-#control your display hardware
-
 -- [font=Monospace 40px] [photos/white-house.jpg]
 eglCreateWindowSurface() with gbm_surface
-
+# We can use the gbm_surface as an EGLNativeWindowType
 
 -- [font=Monospace 40px] [photos/white-house.jpg]
 eglSwapBuffers()
-
+# Once we've got a surface we can render as normal and then use
+# eglSwapBuffers to swap the gbm buffers handled by the gbm surface.
 -- [font=Monospace 40px] [photos/white-house.jpg]
 gbm_surface_lock_front_buffer()
 gbm_surface_release_buffer()
 
 # Used to be named gbm_surface_get/release_bo()
 
-
-
+# We can use these two functions to get access to the current front
+# buffer as a gbm_buffer. To present this will we use KMS... (over to
+# Rob)
 
 -- [photos/river.jpg]
 Kernel Mode Setting Taster
