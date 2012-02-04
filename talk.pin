@@ -93,7 +93,7 @@ Clients are King
 # Wayland compositor...
 
 -- [photos/3536874376_8faa3e977e_b.jpg]
-Interfaces, Events & Requests
+Interfaces, Events &amp; Requests
 
 # All interactions over the wayland protocol happen according to
 # interfaces that are declared in XML
@@ -533,7 +533,7 @@ gbm_surface_release_buffer()
 (R) Kernel Mode Setting Taster
 
 -- [photos/river.jpg]
-Connectors, Encoders & CRTCs
+Connectors, Encoders &amp; CRTCs
 
 -- [photos/river.jpg]
 Query the KMS resources...
@@ -716,7 +716,7 @@ Connect as window manager
 # clients.
 
 -- [text-align=center] [photos/bridge.jpg]
-Pair surfaces & windows according
+Pair surfaces &amp; windows according
 to "set_window_id" requests.
 
 # Once xwayland is initialized we can now expect "create_surface"
