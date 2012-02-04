@@ -329,10 +329,10 @@ eglBindWaylandDisplayWL()
 # is up to the implementation but in Mesa it will register a global
 # object with the wl_drm interface.
 
---
+-- [photos/2889657735_5234d83de4_b.jpg]
 (R) Wayland outputs
 
--- [font=Monospace 20px]
+-- [font=Monospace 20px] [photos/2889657735_5234d83de4_b.jpg]
   &lt;<span color="#0000FF">interface</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">wl_output</span><span color="#8B2252">&quot;</span> <span color="#A0522D">version</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">1</span><span color="#8B2252">&quot;</span>>
     &lt;<span color="#0000FF">enum</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">subpixel</span><span color="#8B2252">&quot;</span>> ... &lt;/<span color="#0000FF">enum</span>>
     &lt;<span color="#0000FF">event</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">geometry</span><span color="#8B2252">&quot;</span>> ... &lt;/<span color="#0000FF">event</span>>
@@ -340,10 +340,10 @@ eglBindWaylandDisplayWL()
     &lt;<span color="#0000FF">event</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">mode</span><span color="#8B2252">&quot;</span>> ... &lt;/<span color="#0000FF">event</span>>
   &lt;/<span color="#0000FF">interface</span>>
 
---
+-- [photos/2889657735_5234d83de4_b.jpg]
 The Compositor object
 
--- [font=Monospace 20px]
+-- [font=Monospace 20px] [photos/2889657735_5234d83de4_b.jpg]
   &lt;<span color="#0000FF">interface</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">wl_compositor</span><span color="#8B2252">&quot;</span> <span color="#A0522D">version</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">1</span><span color="#8B2252">&quot;</span>>
     &lt;<span color="#0000FF">request</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">create_surface</span><span color="#8B2252">&quot;</span>>
       &lt;<span color="#0000FF">arg</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">id</span><span color="#8B2252">&quot;</span> <span color="#A0522D">type</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">new_id</span><span color="#8B2252">&quot;</span> <span color="#A0522D">interface</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">wl_surface</span><span color="#8B2252">&quot;</span>/>
@@ -352,10 +352,10 @@ The Compositor object
 
 # Remember to note that the xml snippet is a pseudo description
 
---
+-- [photos/2889657735_5234d83de4_b.jpg]
 The wl_surface interface
 
--- [font=Monospace 20px]
+-- [font=Monospace 20px] [photos/2889657735_5234d83de4_b.jpg]
   &lt;<span color="#0000FF">interface</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">wl_surface</span><span color="#8B2252">&quot;</span> <span color="#A0522D">version</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">1</span><span color="#8B2252">&quot;</span>>
     &lt;<span color="#0000FF">request</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">destroy</span><span color="#8B2252">&quot;</span> <span color="#A0522D">type</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">destructor</span><span color="#8B2252">&quot;</span>/>
     &lt;<span color="#0000FF">request</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">attach</span><span color="#8B2252">&quot;</span>> ... &lt;/<span color="#0000FF">request</span>>
@@ -427,10 +427,10 @@ Frame callbacks
     }
 </tt>
 
---
+-- [photos/2889678725_55f1e7fbeb_b.jpg]
 The wl_shell_surface interface
 
--- [font=Monospace 20px]
+-- [font=Monospace 20px] [photos/2889678725_55f1e7fbeb_b.jpg]
   &lt;<span color="#0000FF">interface</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">wl_shell_surface</span><span color="#8B2252">&quot;</span> <span color="#A0522D">version</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">1</span><span color="#8B2252">&quot;</span>>
     &lt;<span color="#0000FF">request</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">move</span><span color="#8B2252">&quot;</span>> ... &lt;/<span color="#0000FF">request</span>>
     &lt;<span color="#0000FF">enum</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">resize</span><span color="#8B2252">&quot;</span>> ... &lt;/<span color="#0000FF">enum</span>>
@@ -694,7 +694,7 @@ to "set_window_id" requests.
 -- [photos/bridge.jpg]
 Caveats...
 
--- [photos/bridge.jpg]
+-- [photos/bridge.jpg] [font=40px]
 Unsynchronized X and wayland protocols
 
 # Beware of having separate X and wayland command streams. If a
@@ -708,7 +708,7 @@ Unsynchronized X and wayland protocols
 # consistently making sure to process X events before wayland events works OK
 #FIXME more...
 
--- [photos/bridge.jpg]
+-- [photos/bridge.jpg] [font=40px]
 Beware about forwarding mouse input
 
 # This problem mostly just applies to porting X compositors to be
@@ -730,7 +730,7 @@ Sync X windows position to screen
 # they don't position pop up menus offscreen or crossing over multiple
 # screens.
 
---
+-- [photos/2988748371_a16e92f0b6_b.jpg]
 (N) Our own compositors...
 
 
@@ -750,7 +750,7 @@ A small Clutter based compositor
 -- [photos/dawati-wayland.png]
 Hybrid Mutter Status
 
---
+-- [photos/2988748371_a16e92f0b6_b.jpg]
 First a quick intro for Mutter
 
 # Introduce what mutter is; GNOME/X compositor framework for writing
