@@ -1,5 +1,5 @@
 #!/usr/bin/env pinpoint
-[duration=40] [black] [shading-opacity=1.0]
+[duration=40] [black] [shading-opacity=1.0] [transition=fade-fast]
 
 -- [photos/2889678711_50c3e81405_b.jpg]
 (R) Writing a Wayland Compositor
