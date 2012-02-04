@@ -436,6 +436,12 @@ Handling buffer attach requests
 -- [font=Monospace 20px] [photos/2889657735_5234d83de4_b.jpg]
 <i>Handling a buffer attach from a client</i>
 <tt>
+<span color="#A020F0">static</span> <span color="#228B22">voi</span><span color="#228B22">d</span>
+<span color="#0000FF">cogland_surface_attach_buffer</span> (<span color="#A020F0">struct</span> <span color="#228B22">wl_client</span> *<span color="#A0522D">wayland_client</span>,
+                               <span color="#A020F0">struct</span> <span color="#228B22">wl_resource</span> *<span color="#A0522D">wayland_surface_resource</span>,
+                               <span color="#A020F0">struct</span> <span color="#228B22">wl_resource</span> *<span color="#A0522D">wayland_buffer_resource</span>,
+                               <span color="#228B22">gint32</span> <span color="#A0522D">dx</span>, <span color="#228B22">gint32</span> <span color="#A0522D">dy</span>)
+{
  <span color="#228B22">EGLImag</span><span color="#228B22">e</span> <span color="#A0522D">image</span> = eglCreateImageKHR (ec->display, <span color="#008B8B">NULL</span>,
                                      EGL_WAYLAND_BUFFER_WL,
                                      buffer, <span color="#008B8B">NULL</span>);
@@ -444,6 +450,7 @@ Handling buffer attach requests
  glGenTextures (1, &amp;tex);
  glBindTexture (GL_TETURE_2D, tex);
  glEGLImageTargetTexture2DOES (GL_TEXTURE_2D, es->image);
+}
 </tt>
 
 # This request is made whenever the client has finished rendering a
