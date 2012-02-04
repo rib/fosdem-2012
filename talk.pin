@@ -550,8 +550,11 @@ The wl_shell and wl_shell_surface interface
 # custom surface related requests and events.
 
 -- [photos/white-house.jpg]
-libgbm
+Owning the display
 # *** NEIL ***
+
+-- [photos/white-house.jpg]
+libgbm
 #
 #Makes allocating drm buffers easy
 #
