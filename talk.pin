@@ -316,7 +316,13 @@ eglBindWaylandDisplayWL()
 # object with the wl_drm interface.
 
 -- [photos/2889657735_5234d83de4_b.jpg]
-(R) Wayland outputs
+(R) Implementing some interfaces...
+
+# Say that we'll go though some of the key interfaces involved in writing a
+# compositor and give a taster of how we implement these...
+
+-- [photos/2889657735_5234d83de4_b.jpg]
+Wayland outputs
 
 -- [font=Monospace 20px] [photos/2889657735_5234d83de4_b.jpg]
   &lt;<span color="#0000FF">interface</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">wl_output</span><span color="#8B2252">&quot;</span> <span color="#A0522D">version</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">1</span><span color="#8B2252">&quot;</span>>
@@ -341,6 +347,15 @@ wl_resource_post_event (resource,
 			0, <span color="#B22222">/* </span><span color="#B22222">subpixel: unknown </span><span color="#B22222">*/</span>
 			<span color="#8B2252">&quot;unknown&quot;</span>, <span color="#B22222">/* </span><span color="#B22222">make </span><span color="#B22222">*/</span>
 			<span color="#8B2252">&quot;unknown&quot;</span>); <span color="#B22222">/</span><span color="#B22222">* </span><span color="#B22222">model </span><span color="#B22222">*/</span>
+
+wl_list_for_each (mode, &output->mode_list, link) {
+      wl_resource_post_event(resource,
+			     WL_OUTPUT_MODE,
+			     mode->flags,
+			     mode->width,
+			     mode->height,
+			     mode->refresh);
+}
 
 # Explain that this is an example of what might be done in the compositors bind
 # callback function to immediately respond to a binding by sending the client
