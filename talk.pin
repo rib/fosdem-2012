@@ -99,7 +99,6 @@ Interfaces, Events & Requests
 # interfaces that are declared in XML
 
 
-#TODO Need to demonstrate events in the xml:
 -- [font=Monospace 20px] [photos/3536874376_8faa3e977e_b.jpg]
 &lt;<span color="#0000FF">protocol</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">xserver</span><span color="#8B2252">&quot;</span>>
 
@@ -119,6 +118,13 @@ Interfaces, Events & Requests
   &lt;/<span color="#0000FF">interface</span>>
 
 &lt;/<span color="#0000FF">protocol</span>>
+
+# Don't worry about the details of what this interface is for but explain that
+# interfaces are declared using xml and interfaces are made of requests and
+# events.
+#
+# Explain that no requests rely on have synchronous replies
+#
 
 # Give examples of the different interfaces in a compositor
 #   - wl_display - bind
