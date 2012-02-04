@@ -348,7 +348,7 @@ wl_resource_post_event (resource,
 			<span color="#8B2252">&quot;unknown&quot;</span>, <span color="#B22222">/* </span><span color="#B22222">make </span><span color="#B22222">*/</span>
 			<span color="#8B2252">&quot;unknown&quot;</span>); <span color="#B22222">/</span><span color="#B22222">* </span><span color="#B22222">model </span><span color="#B22222">*/</span>
 
-wl_list_for_each (mode, &output->mode_list, link) {
+<span color="#A0522D">wl_list_for_each</span> (mode, &amp;output->mode_list, link) {
       wl_resource_post_event(resource,
 			     WL_OUTPUT_MODE,
 			     mode->flags,
