@@ -119,21 +119,8 @@ Interfaces, Events & Requests
 
 &lt;/<span color="#0000FF">protocol</span>>
 
-# Don't worry about the details of what this interface is for but explain that
-# interfaces are declared using xml and interfaces are made of requests and
-# events.
+# Don't worry about the details of what this particular interface is for.
 #
-# Explain that no requests rely on have synchronous replies
-#
-
-# Give examples of the different interfaces in a compositor
-#   - wl_display - bind
-#   - wl_compositor - create_surface
-#   - wl_shm
-#   - wl_output
-#   - wl_input_device
-
-
 # An interface defines a set of requests and events which can each
 # have a name and a set of arguments with names and types.
 #
@@ -142,11 +129,6 @@ Interfaces, Events & Requests
 # Explain that requests can't send synchronous replies, which makes
 # sense for a cross process IPC protocol, but instead compositors can
 # send events to send information out to clients.
-
-#Example of sending an event from a compositor
-#      wl_resource_post_event (&callback->resource,
-#                              WL_CALLBACK_DONE, get_time ());
-
 
 -- [photos/3536874376_8faa3e977e_b.jpg]
 Objects
@@ -167,23 +149,22 @@ Objects
     g_error (<span color="#8B2252">&quot;Failed to register wayland compositor object&quot;</span>);
 </tt>
 
-# Whenever a client binds an object then the compositor constructs a
-# server side resource representing the clients view of that object.
-
+# Explain that this is how a compositor registers an object with
+# libwayland-server which will result in a new event being sent to clients
+# advertising the new object.
+#
+# This example registers the global compositor object. This is the key object
+# that clients will use to create surfaces.
+#
+# Explain that clients can respond to that event by asking to explicitly bind
+# the interface via...
+#
 #E.g.
 #  if (strcmp (interface, "wl_compositor") == 0)
 #    wayland_renderer->wayland_compositor =
 #      wl_display_bind (display, id, &wl_compositor_interface);
 #
 
-
-#  compositor.wayland_shm = wl_shm_init (compositor.wayland_display,
-#                                        &amp;shm_callbacks);
-
-# This is an example of how to register an object
-#
-# This registers the global compostor object. This is the key object
-# that clients will use to create surfaces.
 -- [font=Monospace 20px] [photos/3536874376_8faa3e977e_b.jpg]
 <i>This part is a callback</i>
 
@@ -196,8 +177,8 @@ Objects
 </tt>
 
 
-#  compositor.wayland_shm = wl_shm_init (compositor.wayland_display,
-#                                        &amp;shm_callbacks);
+# Explain that the highlighted function will be called whenever a client
+# explicitly binds to this interface.
 
 -- [font=Monospace 20px] [photos/3536874376_8faa3e977e_b.jpg]
 <i>Implementation</i>
@@ -216,9 +197,8 @@ Objects
 </tt>
 
 
-# The callback will be called whenever a client binds the objects.
-# This creates a new resource on the compositor side to represent the
-# clients view of the object.
+# Explain that this creates a new resource on the compositor side to represent
+# the clients view of the object.
 
 -- [photos/depot.jpg]
 (N) The rendering architecture...
@@ -346,6 +326,29 @@ eglBindWaylandDisplayWL()
     &lt;<span color="#0000FF">event</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">mode</span><span color="#8B2252">&quot;</span>> ... &lt;/<span color="#0000FF">event</span>>
   &lt;/<span color="#0000FF">interface</span>>
 
+# Note that this interface is stripped to just give an outline of what it deals
+# with
+
+-- [font=Monospace 20px] [photos/2889657735_5234d83de4_b.jpg]
+struct wl_resource *resource =
+  wl_client_add_object (client, &wl_output_interface, NULL, id, data);
+
+wl_resource_post_event (resource,
+			WL_OUTPUT_GEOMETRY,
+			output->x, output->y,
+			output->width_mm,
+			output->height_mm,
+			0, /* subpixel: unknown */
+			"unknown", /* make */
+			"unknown"); /* model */
+
+# Explain that this is an example of what might be done in the compositors bind
+# callback function to immediately respond to a binding by sending the client
+# an event describing the output's geometry.
+#
+# Instead of just sending "unknown" for the make and model though a compositor
+# will use some other api like KMS to query more meaningful names.
+
 -- [photos/2889657735_5234d83de4_b.jpg]
 The Compositor object
 
@@ -358,7 +361,35 @@ The Compositor object
 
 # Remember to note that the xml snippet is a pseudo description
 
--- [photos/2889657735_5234d83de4_b.jpg]
+# Explain that this interface is used by clients to create new surfaces
+#
+
+-- [font=Monospace 20px] [photos/2889657735_5234d83de4_b.jpg]
+static void
+cogland_compositor_create_surface (struct wl_client *wayland_client,
+                                   struct wl_resource *wayland_compositor_resource,
+                                   guint32 id)
+{
+  CoglandCompositor *compositor = wayland_compositor_resource->data;
+  CoglandSurface *surface = g_slice_new0 (CoglandSurface);
+
+  surface->compositor = compositor;
+
+  surface->wayland_surface.resource.destroy =
+    cogland_surface_resource_destroy_cb;
+  surface->wayland_surface.resource.object.id = id;
+  surface->wayland_surface.resource.object.interface = &wl_surface_interface;
+  surface->wayland_surface.resource.object.implementation =
+          (void (**)(void)) &cogland_surface_interface;
+  surface->wayland_surface.resource.data = surface;
+
+  wl_client_add_resource (wayland_client, &surface->wayland_surface.resource);
+
+  compositor->surfaces = g_list_prepend (compositor->surfaces,
+                                         surface);
+}
+
+--  [photos/2889657735_5234d83de4_b.jpg]
 The wl_surface interface
 
 -- [font=Monospace 20px] [photos/2889657735_5234d83de4_b.jpg]
@@ -372,7 +403,7 @@ The wl_surface interface
 -- [photos/depot.jpg]
 Handling buffer attach requests
 
--- [font=Monospace 20px] [photos/depot.jpg]
+-- [font=Monospace 20px] [photos/2889657735_5234d83de4_b.jpg]
 <i>Handling a buffer attach from a client</i>
 <tt>
 <span color="#A020F0">static</span> <span color="#228B22">voi</span><span color="#228B22">d</span>
@@ -391,7 +422,7 @@ Handling buffer attach requests
 </tt>
 
 
--- [photos/depot.jpg]
+-- [photos/2889657735_5234d83de4_b.jpg]
 Frame callbacks
 
 
@@ -419,7 +450,7 @@ Frame callbacks
 #
 # This can make a big power saving.
 
--- [photos/depot.jpg] [font=25px]
+-- [photos/2889657735_5234d83de4_b.jpg] [font=25px]
 <i>Post frame callback-done events on paint</i>
 <tt>
   <span color="#A020F0">while</span> (!g_queue_is_empty (&amp;compositor->frame_callbacks))
@@ -433,10 +464,10 @@ Frame callbacks
     }
 </tt>
 
--- [photos/2889678725_55f1e7fbeb_b.jpg]
+-- [photos/2889657735_5234d83de4_b.jpg]
 The wl_shell_surface interface
 
--- [font=Monospace 20px] [photos/2889678725_55f1e7fbeb_b.jpg]
+-- [font=Monospace 20px] [photos/2889657735_5234d83de4_b.jpg]
   &lt;<span color="#0000FF">interface</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">wl_shell_surface</span><span color="#8B2252">&quot;</span> <span color="#A0522D">version</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">1</span><span color="#8B2252">&quot;</span>>
     &lt;<span color="#0000FF">request</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">move</span><span color="#8B2252">&quot;</span>> ... &lt;/<span color="#0000FF">request</span>>
     &lt;<span color="#0000FF">enum</span> <span color="#A0522D">name</span>=<span color="#8B2252">&quot;</span><span color="#8B2252">resize</span><span color="#8B2252">&quot;</span>> ... &lt;/<span color="#0000FF">enum</span>>
