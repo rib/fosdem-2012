@@ -438,18 +438,26 @@ Handling buffer attach requests
 <tt>
 <span color="#A020F0">static</span> <span color="#228B22">voi</span><span color="#228B22">d</span>
 <span color="#0000FF">cogland_surface_attach_buffer</span> (<span color="#A020F0">struct</span> <span color="#228B22">wl_client</span> *<span color="#A0522D">wayland_client</span>,
-                               <span color="#A020F0">struct</span> <span color="#228B22">wl_resource</span> *<span color="#A0522D">wayland_surface_resource</span>,
-                               <span color="#A020F0">struct</span> <span color="#228B22">wl_resource</span> *<span color="#A0522D">wayland_buffer_resource</span>,
+                               <span color="#A020F0">struct</span> <span color="#228B22">wl_resource</span> *<span color="#A0522D">surface_resource</span>,
+                               <span color="#A020F0">struct</span> <span color="#228B22">wl_resource</span> *<span color="#A0522D">buffer_resource</span>,
                                <span color="#228B22">gint32</span> <span color="#A0522D">dx</span>, <span color="#228B22">gint32</span> <span color="#A0522D">dy</span>)
 {
- <span color="#228B22">EGLImag</span><span color="#228B22">e</span> <span color="#A0522D">image</span> = eglCreateImageKHR (ec->display, <span color="#008B8B">NULL</span>,
+ <span color="#A020F0">struct</span> <span color="#228B22">my_surfac</span><span color="#228B22">e</span> *<span color="#A0522D">surface</span> = surface_resource->data;
+ <span color="#A020F0">struct</span> <span color="#228B22">my_composito</span><span color="#228B22">r</span> *<span color="#A0522D">compositor</span> = surface->compositor;
+ <span color="#A020F0">struct</span> <span color="#228B22">wl_buffe</span><span color="#228B22">r</span> *<span color="#A0522D">buffer</span> = buffer_resource->data;
+
+ <span color="#228B22">EGLImag</span><span color="#228B22">e</span> <span color="#A0522D">image</span> = eglCreateImageKHR (compositor->display, <span color="#008B8B">NULL</span>,
                                      EGL_WAYLAND_BUFFER_WL,
                                      buffer, <span color="#008B8B">NULL</span>);
 
  <span color="#228B22">GLuin</span><span color="#228B22">t</span> <span color="#A0522D">tex</span>;
  glGenTextures (1, &amp;tex);
  glBindTexture (GL_TETURE_2D, tex);
- glEGLImageTargetTexture2DOES (GL_TEXTURE_2D, es->image);
+ glEGLImageTargetTexture2DOES (GL_TEXTURE_2D, image);
+
+ eglDestroyImageKHR (compositor->display, image);
+
+ surface->texture = tex;
 }
 </tt>
 
