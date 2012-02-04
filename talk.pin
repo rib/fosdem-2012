@@ -222,13 +222,20 @@ EGL
 # or offscreen buffer.
 #
 # It can be considered a replacement for GLX.
--- [font=45px] [photos/depot.jpg]
+-- [photos/depot.jpg]
 eglCreateDisplay(NativeDisplayType display)
+eglCreateWindowSurface(EGLNativeWindowType)
 
+# These two functions are platform-independent but take a point to a
+# native type. They are effectively void* pointers that the EGL
+# implementation interprets how it likes.
+#
 # For example, to create an EGL display you have to pass it a
 # NativeDisplayType. This is a platform specific pointer representing
 # the display. Eg, for X it could be the X Display* pointer. It is up
 # to the EGL implementation to interpret this pointer correctly.
+#
+# So for the second function on X we'd pass an Xlib Window.
 
 -- [bottom] [egl-in-wayland.png]
 EGL in Wayland
@@ -247,6 +254,11 @@ EGL in Clients...
 # The EGL implementation has to have specific support to interpret
 # EGLNativeDisplayType and EGLNativeWindowType as wayland types.
 # The client would then do the following:
+-- [font=45px] [photos/depot.jpg]
+eglCreateDisplay(NativeDisplayType display)
+
+# To start we need to get a pointer to pass here.
+
 -- [photos/depot.jpg]
 <i>Create a wayland display object</i>
 
@@ -276,6 +288,17 @@ wl_compositor::create_surface
 
 # This is a method on the compositor's wl_compositor object to create
 # a surface. The client generates an ID for the surface.
+-- [font=35px] [photos/depot.jpg]
+eglCreateWindowSurface(EGLNativeWindowType)
+
+# This is the EGL function to create a surface.
+#
+# We need to fill in a native 
+# Once the client has a wl_egl_window* pointer it can pass that to
+# EGL as the native window type to create a regular EGL surface.
+#
+# The surface can then be used with eglMakeCurrent to bind the GL context.
+# From then on the application can just use regular GL or GLES.
 --[font=28px] [photos/depot.jpg]
 <i>libwayland-egl:</i>
 
@@ -289,14 +312,6 @@ wl_compositor::create_surface
 # libwayland-egl is some wayland-specific functions in the EGL implementation
 # This function is used to create a structure which combines a size with a
 # wayland surface.
--- [font=35px] [photos/depot.jpg]
-eglCreateWindowSurface(EGLNativeWindowType)
-
-# Once the client has a wl_egl_window* pointer it can pass that to
-# EGL as the native window type to create a regular EGL surface.
-#
-# The surface can then be used with eglMakeCurrent to bind the GL context.
-# From then on the application can just use regular GL or GLES.
 -- [photos/depot.jpg]
 EGL in the Compositor
 
@@ -421,19 +436,14 @@ Handling buffer attach requests
 -- [font=Monospace 20px] [photos/2889657735_5234d83de4_b.jpg]
 <i>Handling a buffer attach from a client</i>
 <tt>
-<span color="#A020F0">static</span> <span color="#228B22">voi</span><span color="#228B22">d</span>
-<span color="#0000FF">cogland_surface_attach_buffer</span> (<span color="#A020F0">struct</span> <span color="#228B22">wl_client</span> *<span color="#A0522D">wayland_client</span>,
-                               <span color="#A020F0">struct</span> <span color="#228B22">wl_resource</span> *<span color="#A0522D">wayland_surface_resource</span>,
-                               <span color="#A020F0">struct</span> <span color="#228B22">wl_resource</span> *<span color="#A0522D">wayland_buffer_resource</span>,
-                               <span color="#228B22">gint32</span> <span color="#A0522D">dx</span>, <span color="#228B22">gint32</span> <span color="#A0522D">dy</span>)
-{
-  <span color="#B22222">/</span><span color="#B22222">*</span><span color="#B22222">.... </span><span color="#B22222">*/</span>
-  buffer->texture =
-    cogl_wayland_texture_2d_new_from_buffer (compositor->cogl_context,
-                                             wayland_buffer,
-                                             &amp;error);
-  <span color="#B22222">/</span><span color="#B22222">*</span><span color="#B22222">...</span><span color="#B22222">*/</span>
-}
+ <span color="#228B22">EGLImag</span><span color="#228B22">e</span> <span color="#A0522D">image</span> = eglCreateImageKHR (ec->display, <span color="#008B8B">NULL</span>,
+                                     EGL_WAYLAND_BUFFER_WL,
+                                     buffer, <span color="#008B8B">NULL</span>);
+
+ <span color="#228B22">GLuin</span><span color="#228B22">t</span> <span color="#A0522D">tex</span>;
+ glGenTextures (1, &amp;tex);
+ glBindTexture (GL_TETURE_2D, tex);
+ glEGLImageTargetTexture2DOES (GL_TEXTURE_2D, es->image);
 </tt>
 
 # This request is made whenever the client has finished rendering a
