@@ -2,8 +2,9 @@
 [duration=40] [black] [shading-opacity=1.0] [transition=fade-fast]
 
 -- [photos/2889678711_50c3e81405_b.jpg]
-(R) Writing a Wayland Compositor
-
+Writing a Wayland Compositor
+# *** ROB ***
+#
 # The idea of this talk is to hopefully give some insight into writing
 # a wayland compositor based on some of our early experiences. So far
 # we've written three compositors; each progressively more capable
@@ -22,8 +23,9 @@ Robert Bragg
 #   drivers in the past.
 
 -- [photos/2889678711_50c3e81405_b.jpg]
-(N) Neil Roberts
-
+Neil Roberts
+# *** NEIL ***
+#
 # - Also on the visualization team in the Intel OTC.
 # - Part-maintainer of Cogl
 # - Recently got involved in the Wayland effort
@@ -87,8 +89,9 @@ Clients are King
 # - keyboard maps / interpreting keyboard events
 
 -- [photos/3536874376_8faa3e977e_b.jpg]
-(R) How a compositor looks..
-
+How a compositor looks..
+# *** ROB ***
+#
 # We're going to run through the basic design and components of a
 # Wayland compositor...
 
@@ -201,8 +204,9 @@ Objects
 # the clients view of the object.
 
 -- [photos/depot.jpg]
-(N) The rendering architecture...
-
+The rendering architecture...
+# *** NEIL ***
+#
 -- [photos/depot.jpg]
 SHM buffers
 
@@ -331,8 +335,9 @@ eglBindWaylandDisplayWL()
 # object with the wl_drm interface.
 
 -- [photos/2889657735_5234d83de4_b.jpg]
-(R) Implementing some interfaces...
-
+Implementing some interfaces...
+# *** ROB ***
+#
 # Say that we'll go though some of the key interfaces involved in writing a
 # compositor and give a taster of how we implement these...
 
@@ -525,8 +530,9 @@ The wl_shell_surface interface
 # contract of the callback interface.
 
 -- [photos/white-house.jpg]
-(N) libgbm
-
+libgbm
+# *** NEIL ***
+#
 #Makes allocating drm buffers easy
 #
 
@@ -568,8 +574,9 @@ gbm_surface_release_buffer()
 
 
 -- [photos/river.jpg]
-(R) Kernel Mode Setting Taster
-
+Kernel Mode Setting Taster
+# *** ROB ***
+#
 -- [photos/river.jpg]
 Connectors, Encoders &amp; CRTCs
 
@@ -639,8 +646,9 @@ drmModeSetCrtc (fd, encoder->crtc_id, fb_id,
 		&amp;mode);
 
 -- [photos/parish.jpg]
-(N) TTY handling
-
+TTY handling
+# *** NEIL ***
+#
 -- [photos/parish.jpg]
 Block input to the tty
 
@@ -670,8 +678,9 @@ ret = ioctl(tty->fd, KDSETMODE, KD_GRAPHICS);
 }
 
 -- [photos/bridge.jpg]
-(R) xwayland
-
+xwayland
+# *** ROB ***
+#
 # Introduce that X wayland is a means to support legacy X clients
 #
 # Introduce that the compositor is responsible for starting an X
@@ -806,8 +815,9 @@ Sync X windows position to screen
 # screens.
 
 -- [photos/2988748371_a16e92f0b6_b.jpg]
-(N) Our own compositors...
-
+Our own compositors...
+# *** NEIL ***
+#
 
 -- [photos/cogland.png]
 Cogland: A small Cogl based compositor
