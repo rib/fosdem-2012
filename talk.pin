@@ -557,9 +557,6 @@ Owning the display
 libgbm
 #
 #Makes allocating drm buffers easy
-#
-#CAVEAT: This api is in flux!
-#Credit Ander Conselvan de Oleveira for these patches
 
 -- [font=Monospace 40px] [photos/white-house.jpg]
 gbm_create_device()
@@ -576,6 +573,9 @@ struct gbm_surface
 
 #Explain that a gbm surface is just a swap-chain of buffers but
 #there's nothing KMS specific about a gbm surface
+#
+#CAVEAT: This api is in flux!
+#Credit Ander Conselvan de Oleveira for these patches
 
 -- [font=Monospace 40px] [photos/white-house.jpg]
 struct gbm_surface *gbm_surface_create()
@@ -675,13 +675,18 @@ TTY handling
 # *** NEIL ***
 #
 -- [photos/parish.jpg]
-Block input to the tty
+Ignore input to the tty
 
 -- [font=Monospace 20px] [photos/parish.jpg]
 tcflush(tty->fd, TCIFLUSH);
 
 -- [photos/parish.jpg]
 Handle signals for vt switching
+
+# - Close evdev devices
+# - Stop rendering
+# - Set DRM master mode
+# - Enter and leave graphics mode
 
 -- [font=Monospace 20px] [photos/parish.jpg]
 mode.mode = VT_PROCESS;
@@ -839,7 +844,7 @@ Sync X windows position to screen
 # they don't position pop up menus offscreen or crossing over multiple
 # screens.
 
--- [photos/2988748371_a16e92f0b6_b.jpg]
+-- [photos/waylnad-street.jpg] [bottom]
 Our own compositors...
 # *** NEIL ***
 #
@@ -860,12 +865,8 @@ A small Clutter based compositor
 -- [photos/dawati-wayland.png]
 Hybrid Mutter Status
 
--- [photos/2988748371_a16e92f0b6_b.jpg]
-First a quick intro for Mutter
-
 # Introduce what mutter is; GNOME/X compositor framework for writing
 # Clutter based compositors.
-
 
 # Summarize some of the mutter specifics
 #   - We make MetaWindows + MetaWindowActors and MetaShapedTextures
@@ -879,12 +880,6 @@ First a quick intro for Mutter
 #   wayland clients post new buffers and the compositor just has to
 #   deal with whatever size they are.
 # - The compositor no longer needs to draw decorations for each client window
-
-
--- [photos/waylnad-street.jpg] [bottom]
-Mutter Status
-
-# Basically working
 #
 # Wayland clients are still somewhat side-band, not being involved in
 # window stacking for example.
@@ -905,7 +900,7 @@ Where should you start?
 # so it's a very useful example implementation. Much of the code for
 # our Mutter hybrid compositor work borrows code from Weston.
 -- [photos/5338839892_7f8d2535ed_b.jpg] [font=30px]
-<span size="large"><b>Our work</b></span>
+<span size="large"><b>Links</b></span>
 
 Cogland
 <tt>git://git.gnome.org/cogl</tt>
@@ -918,6 +913,9 @@ Our latest work is on the ‘fosdem-2012’ branches for both
 Mutter
 <tt>git://git.gnome.org/mutter</tt>
 on the wip/wayland branch
+
+Mesa gbm patches
+<tt>git://anongit.freedesktop.org/~rib/mesa</tt>
 
 A QT compositor
 <tt>git://gitorious.org/qt-labs/qt-compositor.git</tt>
